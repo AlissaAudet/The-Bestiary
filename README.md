@@ -2,6 +2,9 @@
 ## Nom et IDUL
 
     Alissa Audet | ALAUD52
+## Ajouter/installer requirement
+    Seter fichier requirement selon l'environnement: pip freeze > requirements.txt
+    Installer requirement : pip install -r requirements.txt
 
 ## Exécuter l'application
 
