@@ -1,13 +1,21 @@
-from flask import Blueprint, request, jsonify, render_template
-from models.user_model import insert_user
+from flask import Blueprint, jsonify, render_template
+from models.user_model import get_users, insert_user
 
-signup_bp = Blueprint("signup", __name__)
+user_bp = Blueprint("user", __name__)
 
-@signup_bp.route("/signup", methods=["GET"])
+@user_bp.route("/api/users", methods=["GET"])
+def fetch_users():
+
+    return jsonify(get_users())
+@user_bp.route("/login", methods=["GET"])
+def login_page():
+    return render_template("login.html")
+
+@user_bp.route("/signup", methods=["GET"])
 def signup_page():
     return render_template("signup.html")
 
-@signup_bp.route("/signup", methods=["POST"])
+@user_bp.route("/signup", methods=["POST"])
 def register_user():
     data = request.json
 
