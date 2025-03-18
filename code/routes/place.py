@@ -40,4 +40,4 @@ def create_place():
         return jsonify({"message": "Place created successfully", "pid": pid}), 201
     else:
         print("Failed to create place")
-        return jsonify({"error": "Database error"}), 500
+        return jsonify({"error": "database error"}), 500

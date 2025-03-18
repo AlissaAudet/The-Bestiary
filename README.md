@@ -17,10 +17,10 @@
 ## Structure du projet
 ### Couches
 1. templates :	Contient les fichiers HTML qui définissent l'apparence des pages.
-2. static : Contient les fichiers pour gérer les appels API.
-3. routes : Définit les endpoints .
-4. models : Contient les fichiers pour interagir avec la base de données (un fichier par table).
-5. database :	Gère la connexion à la base de données et contient les scripts d'initialisation.
+2. static : Contient les fichiers js pour gérer les appels API.
+3. routes : Définit les endpoints (séparé par table).
+4. models : Contient les fichiers pour interagir avec la base de données (séparé par table).
+5. database : Gère la base de données et contient les scripts d'initialisation.
 
 
 

@@ -1,4 +1,6 @@
 import pymysql.cursors
+import load_all_data
+
 
 connection = pymysql.connect(
     host="localhost",
@@ -110,6 +112,10 @@ for query in create_tables:
 
 
 print("All BD created")
+
+load_all_data.main()
+
+print("load data called")
 
 cursor.close()
 connection.close()

@@ -26,4 +26,4 @@ def add_observation():
     if success:
         return jsonify({"message": "Observation recorded successfully"}), 201
     else:
-        return jsonify({"error": "Database error"}), 500
+        return jsonify({"error": "database error"}), 500
