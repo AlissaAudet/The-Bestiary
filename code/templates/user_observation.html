@@ -7,25 +7,42 @@
     <script src="{{ url_for('static', filename='user_observation.js') }}" defer></script>
 </head>
 <body>
-    <h1>Register a New Place</h1>
-
-        <label for="latitude">Latitude:</label>
-        <input type="number" id="latitude" name="latitude" step="any" required><br>
-
-        <label for="longitude">Longitude:</label>
-        <input type="number" id="longitude" name="longitude" step="any" required><br>
-
-        <label for="place_name">Place Name:</label>
-        <input type="text" id="place_name" name="place_name"><br>
-
-        <button type="submit">Submit Place</button>
-        <button type="button" onclick="window.location.href='/'">Return To Home Page</button><br>
+    <h2>Register a New Observation</h2>
+    <form id="obs-form">
 
         <label for="species-search">Search species:</label>
-        <input type="text" id="species-search" placeholder="Type a species...">
+        <input type="text" id="species-search" placeholder="Type a species..." required>
         <ul id="species-results" class="dropdown"></ul>
+        <input type="hidden" id="species" name="species"><br><br>
 
+        <label for="timestamp">Observation Time:</label>
+        <input type="datetime-local" id="timestamp" name="timestamp" required><br>
+<br>
+        <label for="behavior">Animal Behavior:</label>
+        <select id="behavior" name="behavior" required>
+            <option value="Sleeping">Sleeping</option>
+            <option value="Eating">Eating</option>
+            <option value="Hunting">Hunting</option>
+            <option value="Moving">Moving</option>
+            <option value="Interacting">Interacting</option>
+        </select><br>
+<br>
+        <label for="description">Description:</label>
+        <textarea id="description" name="description" rows="1" required></textarea><br>
+<br>
+        <label for="latitude">Latitude:</label>
+        <input type="number" id="latitude" name="latitude" step="any" required><br>
+<br>
+        <label for="longitude">Longitude:</label>
+        <input type="number" id="longitude" name="longitude" step="any" required><br>
+<br>
+        <label for="place_name">Place Name:</label>
+        <input type="text" id="place_name" name="place_name"><br>
+<br>
+        <button type="submit">Submit Observation</button>
+        <button type="button" onclick="window.location.href='/'">Return To Home Page</button>
     </form>
+
 </body>
 </html>
 

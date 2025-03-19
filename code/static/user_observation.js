@@ -1,113 +1,110 @@
-document.addEventListener("DOMContentLoaded", () => {
-    setupPlaceForm();
+document.addEventListener("DOMContentLoaded", function () {
+    const userId = getUserIdFromUrl();
     setupSpeciesSearch();
+
+    document.getElementById("obs-form").addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const latitude = parseFloat(document.getElementById("latitude").value);
+        const longitude = parseFloat(document.getElementById("longitude").value);
+        const placeName = document.getElementById("place_name").value.trim() || "Unnamed Place";
+        const species = document.getElementById("species").value;
+
+        const pid = await getOrCreatePlace(latitude, longitude, placeName);
+        if (!pid) {
+            alert("Error: Could not create or find a place.");
+            return;
+        }
+
+        const observationData = {
+            user_id: userId,
+            species: species,
+            timestamp: document.getElementById("timestamp").value,
+            behavior: document.getElementById("behavior").value,
+            description: document.getElementById("description").value,
+            pid: pid
+        };
+
+        try {
+            const response = await fetch(`/user/${userId}/observation`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(observationData)
+            });
+
+            const result = await response.json();
+            alert(result.message || result.error);
+        } catch (error) {
+            console.error("Error submitting observation:", error);
+            alert("Error submitting observation.");
+        }
+    });
 });
 
-function setupPlaceForm() {
-    const submitButton = document.querySelector("button[type='submit']");
-    if (submitButton) {
-        submitButton.addEventListener("click", async (event) => {
-            event.preventDefault();
-            await handlePlaceSubmission();
-        });
-    }
+function getUserIdFromUrl() {
+    const pathParts = window.location.pathname.split("/");
+    return pathParts.includes("user") ? pathParts[pathParts.indexOf("user") + 1] : null;
 }
 
-async function handlePlaceSubmission() {
-    const latitude = document.getElementById("latitude").value.trim();
-    const longitude = document.getElementById("longitude").value.trim();
-    const placeName = document.getElementById("place_name").value.trim();
-
-    if (!validateCoordinates(latitude, longitude)) {
-        alert("Please enter valid coordinates.");
-        return;
-    }
-
+async function getOrCreatePlace(latitude, longitude, placeName) {
     try {
-        const exists = await checkIfPlaceExists(latitude, longitude, placeName);
-        if (exists) {
-            alert("This place already exists in the database!");
-        } else {
-            await addNewPlace(latitude, longitude, placeName);
-            alert("Place added successfully!");
-            window.location.reload();
+        let response = await fetch(`/api/places/search?latitude=${latitude}&longitude=${longitude}&place_name=${encodeURIComponent(placeName)}`);
+        let data = await response.json();
+
+        if (data.exists && data.pid) {
+            return data.pid;
         }
-    } catch (error) {
-        console.error("Error adding place:", error);
-        alert("An error occurred. Please try again.");
-    }
-}
 
-function validateCoordinates(lat, lng) {
-    return (
-        lat !== "" &&
-        lng !== "" &&
-        !isNaN(lat) &&
-        !isNaN(lng) &&
-        lat >= -90 &&
-        lat <= 90 &&
-        lng >= -180 &&
-        lng <= 180
-    );
-}
-
-async function checkIfPlaceExists(latitude, longitude, placeName) {
-    try {
-        const response = await fetch(`/api/places/search?latitude=${latitude}&longitude=${longitude}&place_name=${encodeURIComponent(placeName)}`);
-        if (!response.ok) {
-            throw new Error("Failed to check if place exists");
-        }
-        const data = await response.json();
-        return data.exists;
-    } catch (error) {
-        console.error("Error checking place existence:", error);
-        return false;
-    }
-}
-
-async function addNewPlace(latitude, longitude, placeName) {
-    try {
-        const response = await fetch("/api/places", {
+        let newPlaceResponse = await fetch("/api/places", {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ place_name: placeName, latitude, longitude })
         });
 
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.message || "Unknown error");
-        }
+        let newPlaceData = await newPlaceResponse.json();
+        return newPlaceData.pid || null;
+
     } catch (error) {
-        console.error("Error adding place:", error);
-        throw error;
+        console.error("Error finding or creating place:", error);
+        return null;
     }
 }
 
 function setupSpeciesSearch() {
     const searchInput = document.getElementById("species-search");
     const resultsDropdown = document.getElementById("species-results");
-
-    if (!searchInput || !resultsDropdown) {
-        console.error("Species search elements not found!");
-        return;
-    }
-
-    console.log("Species search initialized!"); // Debug log
+    const hiddenSpeciesInput = document.getElementById("species");
 
     searchInput.addEventListener("input", async () => {
         const query = searchInput.value.trim();
-        console.log(`User typed: ${query}`); // Debug log
-
         if (query.length === 0) {
             resultsDropdown.style.display = "none";
             return;
         }
 
         try {
-            const species = await searchSpecies(query);
-            displaySpeciesResults(species, resultsDropdown, searchInput);
+            const response = await fetch(`/api/species/search?q=${encodeURIComponent(query)}`);
+            const speciesList = await response.json();
+
+            resultsDropdown.innerHTML = "";
+            if (speciesList.length === 0) {
+                resultsDropdown.style.display = "none";
+                return;
+            }
+
+            speciesList.forEach(spec => {
+                const item = document.createElement("li");
+                item.textContent = `${spec.name} (${spec.id})`;
+                item.classList.add("dropdown-item");
+                item.addEventListener("click", () => {
+                    searchInput.value = spec.name;
+                    hiddenSpeciesInput.value = spec.id;
+                    resultsDropdown.style.display = "none";
+                });
+                resultsDropdown.appendChild(item);
+            });
+
+            resultsDropdown.style.display = "block";
         } catch (error) {
             console.error("Error fetching species:", error);
         }
@@ -118,47 +115,4 @@ function setupSpeciesSearch() {
             resultsDropdown.style.display = "none";
         }
     });
-}
-
-async function searchSpecies(query) {
-    try {
-        console.log(`Fetching species for query: ${query}`); // Debugging log
-        const response = await fetch(`/api/species/search?q=${encodeURIComponent(query)}`);
-
-        if (!response.ok) {
-            throw new Error(`Failed to fetch species: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log("API response:", data); // Debugging log
-        return data;
-    } catch (error) {
-        console.error("Error fetching species:", error);
-        return [];
-    }
-}
-
-function displaySpeciesResults(species, dropdown, searchInput) {
-    dropdown.innerHTML = ""; // Clear previous results
-
-    if (species.length === 0) {
-        dropdown.style.display = "none";
-        return;
-    }
-
-    species.forEach((spec) => {
-        const item = document.createElement("li");
-        item.textContent = `${spec.name} (${spec.id})`;
-        item.classList.add("dropdown-item");
-
-        // Clicking on an item fills the input field
-        item.addEventListener("click", () => {
-            searchInput.value = spec.name; // Set input value to species name
-            dropdown.style.display = "none"; // Hide dropdown
-        });
-
-        dropdown.appendChild(item);
-    });
-
-    dropdown.style.display = "block";
 }
