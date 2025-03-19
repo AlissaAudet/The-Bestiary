@@ -2,9 +2,19 @@
 ## Nom et IDUL
 
     Alissa Audet | ALAUD52
+
+## Seter MySql
+Pour seter son mot de passe à "root", faite cette commande dans le terminal MySql de root
+
+    ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; FLUSH PRIVILEGES;
+
 ## Ajouter/installer requirement
-    Seter fichier requirement selon l'environnement: pip freeze > requirements.txt
-    Installer requirement : pip install -r requirements.txt
+Seter fichier requirement selon l'environnement:
+
+      pip freeze > requirements.txt
+Installer requirement : 
+
+    pip install -r requirements.txt
 
 ## Exécuter l'application
 
