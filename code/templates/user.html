@@ -10,6 +10,7 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Age:</strong> {{ user.age }}</p>
     <p><strong>Type:</strong> {{ user.user_type }}</p>
+    <button onclick="window.location.href='/user/{{ user.uid }}/observation'">Add Observation</button>
 
     <br>
     <button onclick="window.location.href='/'">Back to Home</button>

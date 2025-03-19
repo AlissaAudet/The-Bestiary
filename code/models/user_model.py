@@ -43,7 +43,12 @@ def get_user_by_id(uid):
     cursor = connection.cursor(pymysql.cursors.DictCursor)
 
     try:
-        query = "SELECT uid, first_name, last_name, email, age, user_type FROM User WHERE uid = %s"
+        query ="""
+            SELECT uid, first_name, last_name, email, age, user_type, 
+                   account_creation_date, observation_count
+            FROM User
+            WHERE uid = %s;
+            """
         cursor.execute(query, (uid,))
         user = cursor.fetchone()
         return user if user else None
