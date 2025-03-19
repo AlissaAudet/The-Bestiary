@@ -50,41 +50,41 @@ async function getOrCreatePlace(latitude, longitude, placeName) {
     if (!placeName) placeName = "Unnamed Place";
 
     try {
-        console.log(`Searching for place: "${placeName}" at (${latitude}, ${longitude})`);
+        let response = await fetch(`/api/places/search?latitude=${latitude}&longitude=${longitude}&place_name=${encodeURIComponent(placeName)}`);
+        let data = await response.json();
 
-        const response = await fetch(`/api/places/search?latitude=${latitude}&longitude=${longitude}&name=${encodeURIComponent(placeName)}`);
-        const data = await response.json();
-        console.log("Search Response:", data);
-
-        if (data?.pid) {
-            console.log("Place found, using pid:", data.pid);
+        if (data.exists && data.pid) {
             return data.pid;
         }
+        const placeData = {
+            place_name: placeName,
+            latitude: latitude,
+            longitude: longitude
+        };
 
-        console.log("🛠 Place not found. Creating new place...");
-
-        const admin_region = "Default";
-        const climate = "Default";
-
-        const placeData = { latitude, longitude, name: placeName, admin_region, climate };
-        console.log("Sending Place Data:", placeData);
-
-        const newPlaceResponse = await fetch("/api/places", {
+        let newPlaceResponse = await fetch("/api/places", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(placeData)
         });
 
-        const newPlaceData = await newPlaceResponse.json();
+        let newPlaceData = await newPlaceResponse.json();
         console.log("Place Creation Response:", newPlaceData);
 
-        return newPlaceData.pid || null;
+        if (newPlaceData.pid) {
+            console.log("Place created with pid:", newPlaceData.pid);
+            return newPlaceData.pid;
+        }
+
+        console.error(" Error: Place was created but no pid returned.");
+        return null;
 
     } catch (error) {
         console.error("Error finding or creating place:", error);
         return null;
     }
 }
+
 
 
 function loadDropdown(elementId, apiUrl) {
