@@ -95,9 +95,13 @@ function loadDropdown(elementId, apiUrl) {
             const dropdown = document.getElementById(elementId);
             dropdown.innerHTML = '<option value="">Select an option</option>';
 
-            data.forEach(item => {
-                dropdown.innerHTML += `<option value="${item.id}">${item.name}</option>`;
+            data.forEach(user => {
+                let userId = user.id || user.uid;
+                let userName = user.name || `${user.first_name} ${user.last_name}`;
+
+                dropdown.innerHTML += `<option value="${userId}">${userName}</option>`;
             });
         })
         .catch(error => console.error(`Error loading ${elementId}:`, error));
 }
+

@@ -3,14 +3,22 @@ from models.database import get_db_connection
 
 def get_species():
     connection = get_db_connection()
-    cursor = connection.cursor()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
 
-    cursor.execute("SELECT latin_name AS id, name FROM Species")
-    species = cursor.fetchall()
+    try:
+        query = "SELECT latin_name AS id, name FROM Species"
+        cursor.execute(query)
+        species = cursor.fetchall()
 
-    cursor.close()
-    connection.close()
-    return species
+        return species if species else []
+
+    except pymysql.MySQLError as e:
+        print(f" Database error in get_species(): {e}")
+        return []
+
+    finally:
+        cursor.close()
+        connection.close()
 
 def search_species(query):
     connection = get_db_connection()
