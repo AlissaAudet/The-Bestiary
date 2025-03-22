@@ -2,13 +2,48 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Welcome</title>
+    <script src="{{ url_for('static', filename='index.js') }}" defer></script>
 </head>
 <body>
     <h1>Welcome</h1>
+
+    <label for="user-search">Search user:</label>
+    <input type="text" id="user-search" placeholder="Type a name...">
+    <ul id="user-results" class="dropdown"></ul>
+
+    <button id="go-to-user" disabled>Go to Page</button>
+
+    <br><br><br><br>
+
     <button onclick="window.location.href='/login'">Login</button>
     <button onclick="window.location.href='/signup'">Sign Up</button>
-    <button>Add an observation</button>
-</body>
 
+</body>
 </html>
+
+<style>
+#user-results .dropdown-item {
+    list-style: none;
+    padding: 0;
+    margin: 5px 0 0;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    width: 200px;
+    display: none;
+    z-index: 1000;
+}
+
+#user-results .dropdown-item:last-child {
+    border-bottom: none;
+}
+
+#user-results .dropdown-item:hover,
+#user-results li:hover {
+    background-color: #007bff !important;
+    color: white !important;
+}
+</style>
