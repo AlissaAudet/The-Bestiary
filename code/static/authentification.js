@@ -1,6 +1,3 @@
-document.addEventListener("DOMContentLoaded", function() {
-    checkAuth();
-});
 
 document.addEventListener("DOMContentLoaded", function() {
     const signupForm = document.getElementById("signup-form");

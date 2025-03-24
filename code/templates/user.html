@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
     <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='user.js') }}" defer></script>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-
+            try {
                 const isAuthenticated = JSON.parse("{{ authenticated | tojson | safe }}");
                 const isAuthorized = JSON.parse("{{ authorized | tojson | safe }}");
 
@@ -25,7 +26,9 @@
                         addObservationBtn.style.display = "none";
                     }
                 }
-
+            } catch (error) {
+                console.error("Error processing authentication state:", error);
+            }
         });
     </script>
 </head>
@@ -44,8 +47,9 @@
     <br>
 
     <button onclick="window.location.href='/'">Back to Home</button>
-
     <h1>Past Observations :</h1>
-    <h3>Not coded: List of observations with links to /observation/oid</h3>
+    <div id="observations-container">
+        <p>Loading observations...</p>
+    </div>
 </body>
 </html>
