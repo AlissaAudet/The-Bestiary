@@ -1,5 +1,7 @@
 import sys
 import os
+#
+#doit etre modif pour avoir les clé comme attibut
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 

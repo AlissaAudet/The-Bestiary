@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, render_template
+from flask import Flask, render_template, send_from_directory
 
 from routes.observation import observation_bp
 from routes.user import user_bp
@@ -16,6 +16,11 @@ app.register_blueprint(place_bp)
 @app.route("/")
 def index():
     return render_template("index.html")
+
+@app.route('/favicon.ico')
+def favicon():
+    return send_from_directory(os.path.join(app.root_path, 'static'),
+                               'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == "__main__":
     os.system("python init_database.py")

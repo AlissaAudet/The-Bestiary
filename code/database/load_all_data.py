@@ -1,8 +1,8 @@
 from data import load_user_data, load_species_data, load_place_data
 
 def main():
-    print("Loading user data...")
-    load_user_data.load_users()
+    #print("Loading user data...")
+    #load_user_data.load_users()
 
     print("Loading species data...")
     load_species_data.load_species()
