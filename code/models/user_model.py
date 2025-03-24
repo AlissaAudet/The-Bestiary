@@ -1,4 +1,5 @@
 import pymysql
+import bcrypt
 from models.database import get_db_connection
 
 def get_users():
@@ -61,24 +62,44 @@ def get_user_by_id(uid):
         connection.close()
 
 
-def insert_user(first_name, last_name, email, age, user_type):
+def insert_user(first_name, last_name, email, age, password, user_type):
     connection = get_db_connection()
     cursor = connection.cursor()
 
+    password_hash = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+    query = """
+    INSERT INTO User (first_name, last_name, email, age, password_hash, user_type)
+    VALUES (%s, %s, %s, %s, %s, %s)
+    """
+
     try:
-        query = """
-        INSERT INTO User (first_name, last_name, email, age, user_type)
-        VALUES (%s, %s, %s, %s, %s)
-        """
-        cursor.execute(query, (first_name, last_name, email, age, user_type))
-
+        cursor.execute(query, (first_name, last_name, email, age, password_hash, user_type))
         connection.commit()
-        print(f" User inserted: {first_name} {last_name} (email: {email})")
-
     except Exception as e:
-        print(f" Error inserting user: {e}")
-
+        print(f"Error inserting user: {e}")
     finally:
         cursor.close()
         connection.close()
 
+
+def get_user_by_email(email):
+    connection = get_db_connection()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+
+    try:
+        query = """
+            SELECT uid, first_name, last_name, email, password_hash, user_type
+            FROM User
+            WHERE email = %s;
+        """
+        cursor.execute(query, (email,))
+        user = cursor.fetchone()
+        return user if user else None
+
+    except Exception as e:
+        return None
+
+    finally:
+        cursor.close()
+        connection.close()

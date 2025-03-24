@@ -2,7 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='user.js') }}" defer></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            try {
+                const isAuthenticated = JSON.parse("{{ authenticated | tojson | safe }}");
+                const isAuthorized = JSON.parse("{{ authorized | tojson | safe }}");
+
+                const logoutBtn = document.getElementById("logout-btn");
+                const addObservationContainer = document.getElementById("add-observation-container");
+                const addObservationBtn = document.getElementById("add-observation-btn");
+
+                if (logoutBtn && !isAuthenticated) {
+                    logoutBtn.style.display = "none";
+                }
+
+                if (addObservationContainer && addObservationBtn) {
+                    if (!isAuthorized) {
+                        addObservationContainer.style.display = "none";
+                        addObservationBtn.style.display = "none";
+                    }
+                }
+            } catch (error) {
+                console.error("Error processing authentication state:", error);
+            }
+        });
+    </script>
 </head>
 <body>
     <h1>User Profile</h1>
@@ -10,11 +38,18 @@
     <p><strong>Email:</strong> {{ user.email }}</p>
     <p><strong>Age:</strong> {{ user.age }}</p>
     <p><strong>Type:</strong> {{ user.user_type }}</p>
-    <button onclick="window.location.href='/user/{{ user.uid }}/observation'">Add Observation</button>
+
+    <div id="add-observation-container">
+        <button id="add-observation-btn" onclick="window.location.href='/user/{{ user.uid }}/observation'">Add Observation</button>
+        <button id="logout-btn" onclick="logout()">Logout</button>
+    </div>
 
     <br>
+
     <button onclick="window.location.href='/'">Back to Home</button>
-<h1>Past Observation :</h1>
-<h3>Not coded : List of observation with link to /observation/oid </h3>
+    <h1>Past Observations :</h1>
+    <div id="observations-container">
+        <p>Loading observations...</p>
+    </div>
 </body>
 </html>

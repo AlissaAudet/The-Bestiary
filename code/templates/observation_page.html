@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Observation Details</title>
+</head>
+<body>
+    <h1>Animal Observation</h1>
+
+    {% if observation %}
+        <h2>{{ observation.species }}</h2>
+        <p>{{ observation.description }}</p>
+    {% else %}
+        <p>No observation found.</p>
+    {% endif %}
+
+    <button onclick="window.location.href='/'">Back to Home</button>
+    <button onclick="window.location.href = '/user/{{ observation.uid }}'">Author Page</button>
+
+</body>
+</html>

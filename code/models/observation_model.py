@@ -48,4 +48,47 @@ def fetch_observations_by_user(user_id):
 
 
 
+def fetch_observations_by_user(uid):
+    connection = get_db_connection()
+    observations = []
 
+    try:
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = """
+                SELECT oid, timestamp, description, species
+                FROM Observation
+                WHERE author_uid = %s
+                ORDER BY timestamp DESC
+            """
+            cursor.execute(sql, (uid,))
+            observations = cursor.fetchall()
+    except Exception as e:
+        print(f"Error fetching observations for user {uid}: {e}")
+    finally:
+        connection.close()
+
+    return observations
+
+
+
+def fetch_observation_by_id(oid):
+    connection = get_db_connection()
+    observation = None
+
+    try:
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            sql = """
+                 SELECT o.oid, o.timestamp, o.description, s.latin_name AS species, u.first_name, u.last_name, u.uid
+                FROM Observation o
+                JOIN Species s ON o.species = s.latin_name
+                JOIN User u ON o.author_uid = u.uid
+                WHERE o.oid = %s
+            """
+            cursor.execute(sql, (oid,))
+            observation = cursor.fetchone()
+    except Exception as e:
+        print(f"Error fetching observation {oid}: {e}")
+    finally:
+        connection.close()
+
+    return observation

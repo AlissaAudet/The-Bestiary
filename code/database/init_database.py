@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS User (
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     age INT NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
     user_type ENUM('Scientist', 'Passionate') NOT NULL,
     account_creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     observation_count INT DEFAULT 0,

@@ -34,6 +34,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const result = await response.json();
             alert(result.message || result.error);
+            if (response.ok) {
+                window.location.href = `/user/${userId}`;
+            }
         } catch (error) {
             console.error("Error submitting observation:", error);
             alert("Error submitting observation.");

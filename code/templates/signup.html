@@ -4,11 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
-    <script src="{{ url_for('static', filename='signup.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
 </head>
 <body>
     <h1>Register a New User</h1>
-    <form id="auth-form">
+    <form id="signup-form" onsubmit="signup(event)">
         <label for="first-name">First Name:</label>
         <input type="text" id="first-name" name="first-name" required><br>
 
@@ -27,8 +27,11 @@
             <option value="Passionate">Passionate</option>
         </select><br>
 
-        <button type="submit">Apply</button>
-        <button onclick="window.location.href='/'">Return To Home Page</button>
+        <label for="password">Password:</label>
+        <input type="text" id="password" name="password" required><br>
+
+        <button type="submit">Apply</button><br><br>
     </form>
+    <button onclick="window.location.href='/'">Return To Home Page</button>
 </body>
 </html>

@@ -2,12 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Login</title>
+    <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+    <script>
+    document.addEventListener("DOMContentLoaded", async function() {
+        try {
+            const isAuthenticated = await checkAuth();
+            console.log("Authentication status:", isAuthenticated);
+
+            if (isAuthenticated) {
+                document.getElementById("login-container").innerHTML = `
+                    <h1>Welcome Back, you are connected</h1>
+                    <button onclick="logout()">Logout</button>
+                    <button onclick="window.location.href='/'">Return To Home Page</button>
+                `;
+            }
+        } catch (error) {
+            console.error("Error checking authentication", error);
+        }
+    });
+</script>
 </head>
 <body>
-    <h1>Welcome To Login Page</h1>
-    <button onclick="window.location.href='/signup'">Sign Up</button>
-    <button onclick="window.location.href='/'">Return To Home Page</button>
+    <div id="login-container">
+        <h1>Welcome To Login Page</h1>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" placeholder="Enter Email"><br>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password" placeholder="Enter Password"><br>
+        <button onclick="login(event)">Login</button><br><br>
+        <button onclick="window.location.href='/signup'">Sign Up</button>
+        <button onclick="window.location.href='/'">Return To Home Page</button>
+    </div>
 </body>
-
 </html>
