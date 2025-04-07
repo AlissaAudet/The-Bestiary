@@ -1,4 +1,5 @@
 import pymysql
+import requests
 from models.database import get_db_connection
 
 def get_place_by_coordinates(latitude, longitude, place_name):
@@ -21,36 +22,63 @@ def get_place_by_coordinates(latitude, longitude, place_name):
 
     finally:
         connection.close()
+
+
 def insert_place(place_name, latitude, longitude):
     connection = get_db_connection()
     cursor = connection.cursor()
-
     try:
         cursor.execute("""
             SELECT pid FROM Place 
             WHERE name = %s AND latitude = %s AND longitude = %s
         """, (place_name, latitude, longitude))
         result = cursor.fetchone()
-
         if result:
-            pid = result[0] if isinstance(result, tuple) else result.get("pid")
-            return pid
+            pid = result[0]
+        else:
+            cursor.execute("""
+                INSERT INTO Place (name, latitude, longitude) 
+                VALUES (%s, %s, %s)
+            """, (place_name, latitude, longitude))
+            connection.commit()
+            pid = cursor.lastrowid
 
-        cursor.execute("""
-            INSERT INTO Place (name, latitude, longitude) 
-            VALUES (%s, %s, %s)
-        """, (place_name, latitude, longitude))
-        connection.commit()
+        climate_url = f"http://climateapi.scottpinkelman.com/api/v1/location/{latitude}/{longitude}"
+        response = requests.get(climate_url)
+        if response.status_code == 200:
+            data = response.json()
+            if data.get("return_values") and isinstance(data["return_values"], list) and data["return_values"]:
+                climate = data["return_values"][0].get("zone_description")
+                koppen_geiger_zone = data["return_values"][0].get("koppen_geiger_zone")
+                if climate:
+                    cursor.execute("""
+                        UPDATE Place SET climate = %s WHERE pid = %s
+                    """, (climate, pid))
+                    connection.commit()
+                if koppen_geiger_zone:
+                    cursor.execute("""
+                        UPDATE Place SET koppen_geiger_zone = %s WHERE pid = %s
+                    """, (koppen_geiger_zone, pid))
+                    connection.commit()
+        else:
+            print(f"Error fetching climate data: HTTP {response.status_code}")
 
-        new_pid = cursor.lastrowid
+        return pid
 
-        return new_pid
     except pymysql.MySQLError as e:
+        print("Database error in insert_place_with_climate:", e)
+        connection.rollback()
+        return None
+
+    except Exception as e:
+        print("General error in insert_place_with_climate:", e)
+        connection.rollback()
         return None
 
     finally:
         cursor.close()
         connection.close()
+
 
 def get_places():
     connection = get_db_connection()
