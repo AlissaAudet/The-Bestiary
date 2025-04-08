@@ -5,33 +5,113 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
     <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef1f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #signup-form {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"] {
+            margin-top: 25px;
+            width: 100%;
+            padding: 12px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .return-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .return-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
 </head>
 <body>
-    <h1>Register a New User</h1>
     <form id="signup-form" onsubmit="signup(event)">
+        <h1>Register a New User</h1>
+
         <label for="first-name">First Name:</label>
-        <input type="text" id="first-name" name="first-name" required><br>
+        <input type="text" id="first-name" name="first-name" required>
 
         <label for="last-name">Last Name:</label>
-        <input type="text" id="last-name" name="last-name" required><br>
+        <input type="text" id="last-name" name="last-name" required>
 
-        <label for="email">email:</label>
-        <input type="text" id="email" name="email" required><br>
+        <label for="email">Email:</label>
+        <input type="text" id="email" name="email" required>
 
         <label for="age">Age:</label>
-        <input type="number" id="age" name="age" required><br>
+        <input type="number" id="age" name="age" required>
 
         <label for="user-type">User Type:</label>
         <select id="user-type" name="user-type">
             <option value="Scientist">Scientist</option>
             <option value="Passionate">Passionate</option>
-        </select><br>
+        </select>
 
         <label for="password">Password:</label>
-        <input type="text" id="password" name="password" required><br>
+        <input type="text" id="password" name="password" required>
 
-        <button type="submit">Apply</button><br><br>
+        <button type="submit">Apply</button>
     </form>
-    <button onclick="window.location.href='/'">Return To Home Page</button>
+
+    <button class="return-btn" onclick="window.location.href='/'">Return To Home Page</button>
 </body>
 </html>

@@ -1,38 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
-    <script>
-    document.addEventListener("DOMContentLoaded", async function() {
-        try {
-            const isAuthenticated = await checkAuth();
-            console.log("Authentication status:", isAuthenticated);
+  <meta charset="UTF-8">
+  <title>Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
 
-            if (isAuthenticated) {
-                document.getElementById("login-container").innerHTML = `
-                    <h1>Welcome Back, you are connected</h1>
-                    <button onclick="logout()">Logout</button>
-                    <button onclick="window.location.href='/'">Return To Home Page</button>
-                `;
-            }
-        } catch (error) {
-            console.error("Error checking authentication", error);
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef1f5;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #login-form {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 500px;
+      box-sizing: border-box;
+      margin-top: 60px;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+      margin-top: 25px;
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      color: white;
+    }
+
+    .button-group button:nth-child(1) {
+      background-color: #17a2b8;
+    }
+
+    .button-group button:nth-child(1):hover {
+      background-color: #138496;
+    }
+
+    .button-group button:nth-child(2) {
+      background-color: #6c757d;
+    }
+
+    .button-group button:nth-child(2):hover {
+      background-color: #5a6268;
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", async function () {
+      try {
+        const isAuthenticated = await checkAuth();
+        console.log("Authentication status:", isAuthenticated);
+
+        if (isAuthenticated) {
+          document.getElementById("login-form").innerHTML = `
+            <h1>Welcome Back 👋</h1>
+            <p style="text-align:center;">You are already logged in.</p>
+            <div class="button-group">
+              <button onclick="logout()">Logout</button>
+              <button onclick="window.location.href='/'">Return to Home Page</button>
+            </div>
+          `;
         }
+      } catch (error) {
+        console.error("Error checking authentication", error);
+      }
     });
-</script>
+  </script>
 </head>
+
 <body>
-    <div id="login-container">
-        <h1>Welcome To Login Page</h1>
-        <label for="email">Email</label>
-        <input type="text" name="email" id="email" placeholder="Enter Email"><br>
-        <label for="password">Password</label>
-        <input type="password" name="password" id="password" placeholder="Enter Password"><br>
-        <button onclick="login(event)">Login</button><br><br>
-        <button onclick="window.location.href='/signup'">Sign Up</button>
-        <button onclick="window.location.href='/'">Return To Home Page</button>
+  <form id="login-form" onsubmit="login(event)">
+    <h1>Login</h1>
+
+    <label for="email">Email</label>
+    <input type="text" name="email" id="email" placeholder="Enter Email" required>
+
+    <label for="password">Password</label>
+    <input type="password" name="password" id="password" placeholder="Enter Password" required>
+
+    <button type="submit">Login</button>
+
+    <div class="button-group">
+      <button type="button" onclick="window.location.href='/signup'">Sign Up</button>
+      <button type="button" onclick="window.location.href='/'">Return to Home Page</button>
     </div>
+  </form>
 </body>
 </html>

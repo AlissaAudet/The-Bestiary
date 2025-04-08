@@ -1,55 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Profile</title>
-    <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
-    <script src="{{ url_for('static', filename='user.js') }}" defer></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            try {
-                const isAuthenticated = JSON.parse("{{ authenticated | tojson | safe }}");
-                const isAuthorized = JSON.parse("{{ authorized | tojson | safe }}");
+  <meta charset="UTF-8">
+  <title>User Profile</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='user.js') }}" defer></script>
 
-                const logoutBtn = document.getElementById("logout-btn");
-                const addObservationContainer = document.getElementById("add-observation-container");
-                const addObservationBtn = document.getElementById("add-observation-btn");
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef1f5;
+    }
 
-                if (logoutBtn && !isAuthenticated) {
-                    logoutBtn.style.display = "none";
-                }
+    .layout {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
 
-                if (addObservationContainer && addObservationBtn) {
-                    if (!isAuthorized) {
-                        addObservationContainer.style.display = "none";
-                        addObservationBtn.style.display = "none";
-                    }
-                }
-            } catch (error) {
-                console.error("Error processing authentication state:", error);
-            }
-        });
-    </script>
+    .profile-container {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+      flex-shrink: 0;
+    }
+
+    .observations-section {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      flex: 1;
+      min-width: 0;
+      box-sizing: border-box;
+    }
+
+    .profile-container h1,
+    .observations-section h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    .profile-container p {
+      font-size: 16px;
+      margin: 10px 0;
+    }
+
+    .profile-container strong {
+      color: #444;
+    }
+
+    .button-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-top: 25px;
+    }
+
+    .button-group button {
+      padding: 12px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: white;
+      transition: background-color 0.2s ease;
+    }
+
+    #add-observation-btn {
+      background-color: #28a745;
+    }
+
+    #add-observation-btn:hover {
+      background-color: #218838;
+    }
+
+    #logout-btn {
+      background-color: #dc3545;
+    }
+
+    #logout-btn:hover {
+      background-color: #c82333;
+    }
+
+    .back-btn {
+      margin-top: 30px;
+      padding: 10px 20px;
+      background-color: #6c757d;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    .back-btn:hover {
+      background-color: #5a6268;
+    }
+
+    #observations-container p {
+      margin: 0;
+      font-size: 15px;
+      color: #555;
+    }
+
+    @media (max-width: 1000px) {
+      .layout {
+        flex-direction: column;
+      }
+
+      .observations-section {
+        flex: unset;
+        width: 100%;
+      }
+
+      .profile-container {
+        width: 100%;
+        max-width: unset;
+      }
+    }
+  </style>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      try {
+        const isAuthenticated = JSON.parse("{{ authenticated | tojson | safe }}");
+        const isAuthorized = JSON.parse("{{ authorized | tojson | safe }}");
+
+        const logoutBtn = document.getElementById("logout-btn");
+        const addObservationContainer = document.getElementById("add-observation-container");
+        const addObservationBtn = document.getElementById("add-observation-btn");
+
+        if (logoutBtn && !isAuthenticated) {
+          logoutBtn.style.display = "none";
+        }
+
+        if (addObservationContainer && addObservationBtn) {
+          if (!isAuthorized) {
+            addObservationContainer.style.display = "none";
+            addObservationBtn.style.display = "none";
+          }
+        }
+      } catch (error) {
+        console.error("Error processing authentication state:", error);
+      }
+    });
+  </script>
 </head>
-<body>
-    <h1>User Profile</h1>
-    <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
-    <p><strong>Email:</strong> {{ user.email }}</p>
-    <p><strong>Age:</strong> {{ user.age }}</p>
-    <p><strong>Type:</strong> {{ user.user_type }}</p>
 
-    <div id="add-observation-container">
+<body>
+
+  <div class="layout">
+
+    <!-- LEFT: Profile -->
+    <div class="profile-container">
+      <h1>User Profile</h1>
+      <p><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</p>
+      <p><strong>Email:</strong> {{ user.email }}</p>
+      <p><strong>Age:</strong> {{ user.age }}</p>
+      <p><strong>Type:</strong> {{ user.user_type }}</p>
+
+      <div id="add-observation-container" class="button-group">
         <button id="add-observation-btn" onclick="window.location.href='/user/{{ user.uid }}/observation'">Add Observation</button>
         <button id="logout-btn" onclick="logout()">Logout</button>
+      </div>
+
+      <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
     </div>
 
-    <br>
-
-    <button onclick="window.location.href='/'">Back to Home</button>
-    <h1>Past Observations :</h1>
-    <div id="observations-container">
+    <!-- RIGHT: Observations -->
+    <div class="observations-section">
+      <h2>Past Observations :</h2>
+      <div id="observations-container">
         <p>Loading observations...</p>
+      </div>
     </div>
+
+  </div>
+
 </body>
 </html>
