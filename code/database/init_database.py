@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS User (
         class_name VARCHAR(100),
         phylum VARCHAR(100),
         kingdom ENUM('Plant', 'Algae', 'Fungus', 'Animal'),
-        description VARCHAR(300),
+        description VARCHAR(500),
         PRIMARY KEY(latin_name)
     );
     """,
