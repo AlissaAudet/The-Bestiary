@@ -13,22 +13,12 @@ def insert_observation(user_id, species, timestamp, behavior, description, pid, 
     """
 
     try:
-        print("👉 Inserting observation with:")
-        print(f"  user_id={user_id}")
-        print(f"  species={species}")
-        print(f"  timestamp={timestamp}")
-        print(f"  behavior={behavior}")
-        print(f"  description={description}")
-        print(f"  pid={pid}")
-        print(f"  photo_id={photo_id}")
 
         cursor.execute(query, (user_id, species, timestamp, behavior, description, pid, photo_id))
         connection.commit()
-        print("✅ Observation inserted successfully.")
         return True
 
     except Exception as e:
-        print("❌ Database error inserting observation:")
         print("ERROR:", e)
         connection.rollback()
         return False
