@@ -9,17 +9,17 @@ from models.observation_model import (
     fetch_filtered_observations)
 observation_bp = Blueprint("observation", __name__)
 
+
+@observation_bp.route("/observation")
+def observation():
+    return render_template("observation.html")
+
+
 @observation_bp.route("/user/<int:user_id>/observation", methods=["GET"])
 def get_user_observation_page(user_id):
     observations = fetch_observations_by_user(user_id)
 
     return render_template("user_observation.html", user_id=user_id, observations=observations)
-
-# @observation_bp.route("/user/<int:user_id>/observation", methods=["POST"])
-# def add_user_observation(user_id):
-#     observations = fetch_observations_by_user(user_id)
-#     return render_template("user_observation.html", user_id=user_id, observations=observations)
-#
 
 
 @observation_bp.route("/user/<int:user_id>/observation", methods=["POST"])
