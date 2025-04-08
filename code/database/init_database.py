@@ -11,7 +11,7 @@ connection = pymysql.connect(
 
 cursor = connection.cursor()
 
-# cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
 cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS User (
         'Gaspésie–Îles-de-la-Madeleine', 'Lanaudière', 'Laurentides', 'Laval', 
         'Mauricie', 'Montérégie', 'Nord-du-Québec', 'Outaouais', 'Saguenay–Lac-Saint-Jean', 'Default'
     ),
-    climate VARCHAR(100),
+    climate VARCHAR(200),
     koppen_geiger_zone VARCHAR(10),  
     PRIMARY KEY (pid),  
     UNIQUE(name, latitude, longitude)  
@@ -98,10 +98,10 @@ CREATE TABLE IF NOT EXISTS User (
     """
     CREATE TABLE IF NOT EXISTS Photo (
     pid INT NOT NULL AUTO_INCREMENT,
-    observation_oid INT NOT NULL,
+    obs_id INT NOT NULL,
     image_data MEDIUMBLOB NOT NULL,
     PRIMARY KEY(pid),
-    FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
+    FOREIGN KEY(obs_id) REFERENCES Observation(oid)
     );
     """
 ]

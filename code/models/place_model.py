@@ -43,26 +43,6 @@ def insert_place(place_name, latitude, longitude):
             connection.commit()
             pid = cursor.lastrowid
 
-        climate_url = f"http://climateapi.scottpinkelman.com/api/v1/location/{latitude}/{longitude}"
-        response = requests.get(climate_url)
-        if response.status_code == 200:
-            data = response.json()
-            if data.get("return_values") and isinstance(data["return_values"], list) and data["return_values"]:
-                climate = data["return_values"][0].get("zone_description")
-                koppen_geiger_zone = data["return_values"][0].get("koppen_geiger_zone")
-                if climate:
-                    cursor.execute("""
-                        UPDATE Place SET climate = %s WHERE pid = %s
-                    """, (climate, pid))
-                    connection.commit()
-                if koppen_geiger_zone:
-                    cursor.execute("""
-                        UPDATE Place SET koppen_geiger_zone = %s WHERE pid = %s
-                    """, (koppen_geiger_zone, pid))
-                    connection.commit()
-        else:
-            print(f"Error fetching climate data: HTTP {response.status_code}")
-
         return pid
 
     except pymysql.MySQLError as e:

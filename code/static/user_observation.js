@@ -32,7 +32,6 @@ document.addEventListener("DOMContentLoaded", function () {
         try {
             const response = await fetch(`/user/${userId}/observation`, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
                 body: formData
             });
 
