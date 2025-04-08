@@ -5,7 +5,8 @@ from models.observation_model import (
     insert_photo,
     fetch_observations_by_user,
     fetch_observations_by_user,
-    fetch_observation_by_id)
+    fetch_observation_by_id,
+    fetch_filtered_observations)
 observation_bp = Blueprint("observation", __name__)
 
 @observation_bp.route("/user/<int:user_id>/observation", methods=["GET"])
@@ -74,3 +75,23 @@ def observation_page(oid):
     return render_template("observation_page.html", observation=observation)
 
 
+@observation_bp.route("/api/observations/filter", methods=["GET"])
+def filter_observations():
+    author = request.args.get("author")
+    species = request.args.get("species")
+    behavior = request.args.get("behavior")
+    timestamp = request.args.get("timestamp")
+    place_name = request.args.get("place_name")
+
+
+    observations = fetch_filtered_observations(
+        author=author,
+        species=species,
+        timestamp=timestamp,
+        behavior=behavior,
+        place_name=place_name,
+    )
+
+    print("Observations from Database:", observations)
+
+    return jsonify(observations)
