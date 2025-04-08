@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,11 +17,38 @@
 </head>
 <body>
     <h1>Welcome to Observation</h1>
+=======
+  <!DOCTYPE html>
+  <html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <title>Welcome</title>
+      <script src="{{ url_for('static', filename='observation.js') }}" defer></script>
+  </head>
+  <body>
+      <h2>Search for observations</h2>
+      <form id="obs-form">
+          <label for="author-search">Author:</label>
+          <input type="text" id="author-search" placeholder="Type first and last name..." required>
+          <label for="species-search">Species:</label>
+          <input type="text" id="species-search" placeholder="Type a species..." required>
+          <ul id="species-results" class="dropdown"></ul>
+          <input type="hidden" id="species" name="species"><br><br>
+>>>>>>> 379a23822dff9232c0d7f75935e008821f3fd096
 
-    <h2>Not coded: Search observation according to characteristics</h2>
+          <label for="timestamp">Observation Time:</label>
+          <input type="datetime-local" id="timestamp" name="timestamp" required><br><br>
 
-    <br><br><br><br>
+          <label for="behavior">Animal Behavior:</label>
+          <select id="behavior" name="behavior" required>
+              <option value="Sleeping">Sleeping</option>
+              <option value="Eating">Eating</option>
+              <option value="Hunting">Hunting</option>
+              <option value="Moving">Moving</option>
+              <option value="Interacting">Interacting</option>
+          </select><br><br>
 
+<<<<<<< HEAD
     <button onclick="window.location.href='/'">Home Page</button>
     <br><br>
 
@@ -68,6 +96,61 @@
             });
         }
     </script>
+=======
+>>>>>>> 379a23822dff9232c0d7f75935e008821f3fd096
 
-</body>
-</html>
+          <label for="place_name">Place Name:</label>
+          <input type="text" id="place_name" name="place_name"><br><br>
+
+          <ul id="search-results" class="dropdown"></ul>
+
+          <button id="go-to-observation" disabled>Go to Page</button>
+          <button type="button" onclick="window.location.href='/'">Return To Home Page</button>
+      </form>
+
+  </body>
+  </html>
+
+<style>
+#search-results {
+    margin-bottom: 40px;
+    width: 1000px;
+}
+
+#search-results .dropdown-item {
+    list-style-type: none;
+    background-color: lightgray;
+    color: black;
+    margin: 5px;
+    padding: 10px;
+}
+
+#search-results .dropdown-item:hover,
+#search-results li:hover {
+    cursor: pointer !important;
+    background-color: lightblue !important;
+}
+
+#species-results {
+    list-style: none;
+    padding: 0;
+    margin: 5px 280px 0;
+    border: 1px solid #ccc;
+    max-height: 200px;
+    overflow-y: auto;
+    position: absolute;
+    background: white;
+    width: 200px;
+    display: none;
+    z-index: 1000;
+}
+
+#species-results .dropdown-item {
+    padding: 5px;
+    cursor: pointer;
+}
+
+#species-results .dropdown-item:hover {
+    background-color: #f0f0f0;
+}
+</style>
