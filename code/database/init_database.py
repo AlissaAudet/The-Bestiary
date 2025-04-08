@@ -1,13 +1,10 @@
 import pymysql.cursors
 import load_all_data
+from models.database import get_db_connection
 
 
-connection = pymysql.connect(
-    host="localhost",
-    user="root",
-    password="root",
-    autocommit=True
-)
+connection = get_db_connection()
+
 
 cursor = connection.cursor()
 
@@ -101,7 +98,20 @@ CREATE TABLE IF NOT EXISTS User (
         PRIMARY KEY(cid),
         FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
     );
+    """,
+
     """
+    CREATE TABLE IF NOT EXISTS Note(
+        nid INT NOT NULL,
+        observation_oid INT NOT NULL,
+        user_uid INT NOT NULL,
+        note INT,
+        PRIMARY KEY(nid),
+        FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
+        FOREIGN KEY(user_uid) REFERENCES User(uid)
+    );
+    """
+
 ]
 
 for query in create_tables:
@@ -110,6 +120,23 @@ for query in create_tables:
     except Exception as e:
         print(f"Error :\n{query}\nErreur: {e}")
         exit(1)
+try:
+    trigger_sql = """
+    CREATE TRIGGER after_note_insert AFTER INSERT ON Note
+    FOR EACH ROW
+    BEGIN
+    DECLARE avg_rating FLOAT;
+    SELECT AVG(N.note) INTO avg_rating
+    FROM Note N WHERE observation_oid = NEW.observation_oid;
+
+    UPDATE Observation
+    SET note = avg_rating WHERE oid = NEW.observation_oid;
+    """
+    cursor.execute(trigger_sql)
+    connection.commit()
+
+except pymysql.MySQLError as e:
+    print(f"Error: {e}")
 
 
 print("All BD created")

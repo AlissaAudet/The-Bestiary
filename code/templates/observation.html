@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <title>Welcome</title>
     <script src="{{ url_for('static', filename='index.js') }}" defer></script>
+    <style>
+        #rating-container {
+            display: none;
+            margin-top: 10px;
+        }
+        #rating-value {
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
     <h1>Welcome to Observation</h1>
@@ -13,6 +22,52 @@
     <br><br><br><br>
 
     <button onclick="window.location.href='/'">Home Page</button>
+    <br><br>
+
+    <button onclick="toggleRating()">Rate Observation</button>
+
+    <div id="rating-container">
+        <label for="rating-slider">Your Rating: <span id="rating-value">3</span> ⭐</label><br>
+        <input type="range" id="rating-slider" min="1" max="5" value="3" step="1" oninput="updateSliderValue(this.value)">
+        <br><br>
+        <button onclick="submitRating()">Submit Rating</button>
+    </div>
+
+    <script>
+        function toggleRating() {
+            const container = document.getElementById('rating-container');
+            container.style.display = container.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function updateSliderValue(value) {
+            document.getElementById('rating-value').innerText = value;
+        }
+
+        function submitRating() {
+            const rating = document.getElementById('rating-slider').value;
+
+            // Call your API here
+            fetch('/api/submit_rating', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ rating: rating })
+            })
+            .then(response => {
+                if (response.ok) {
+                    alert('Thank you for your rating!');
+                    toggleRating();
+                } else {
+                    alert('Error submitting rating.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to submit rating.');
+            });
+        }
+    </script>
 
 </body>
 </html>

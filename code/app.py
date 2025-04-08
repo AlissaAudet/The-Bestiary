@@ -6,12 +6,14 @@ from routes.observation import observation_bp
 from routes.user import user_bp
 from routes.species import species_bp
 from routes.place import place_bp
+from routes.note import note_bp
 
 app = Flask(__name__)
 app.register_blueprint(observation_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(species_bp)
 app.register_blueprint(place_bp)
+app.register_blueprint(note_bp)
 
 @app.route("/")
 def index():
@@ -23,5 +25,5 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == "__main__":
-    os.system("python init_database.py")
+    os.system("python code\\database\\init_database.py")
     app.run(debug=True)
