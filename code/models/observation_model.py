@@ -3,41 +3,36 @@ from models.database import get_db_connection
 from models.place_model import get_place_by_coordinates
 
 
-def insert_observation(user_id, species, timestamp, behavior, description, pid):
+def insert_observation(user_id, species, timestamp, behavior, description, pid, photo_id):
     connection = get_db_connection()
     cursor = connection.cursor()
 
     query = """
-        INSERT INTO Observation (author_uid, species, timestamp, behavior, description, pid)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO Observation (author_uid, species, timestamp, behavior, description, pid, photo_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
 
     try:
-        cursor.execute(query, (user_id, species, timestamp, behavior, description, pid))
+        print("👉 Inserting observation with:")
+        print(f"  user_id={user_id}")
+        print(f"  species={species}")
+        print(f"  timestamp={timestamp}")
+        print(f"  behavior={behavior}")
+        print(f"  description={description}")
+        print(f"  pid={pid}")
+        print(f"  photo_id={photo_id}")
+
+        cursor.execute(query, (user_id, species, timestamp, behavior, description, pid, photo_id))
         connection.commit()
-        print(f"Observation added (User {user_id} - Species {species})")
+        print("✅ Observation inserted successfully.")
         return True
+
     except Exception as e:
-        print(f"Database error inserting observation: {e}")
+        print("❌ Database error inserting observation:")
+        print("ERROR:", e)
+        connection.rollback()
         return False
-    finally:
-        cursor.close()
-        connection.close()
 
-def insert_photo(obs_id, image_data) :
-    connection = get_db_connection()
-    cursor = connection.cursor()
-
-    query = "INSERT INTO Photo (obs_id, image_data) VALUES (%s, %s)"
-
-    try:
-        cursor.execute(query, (obs_id, image_data))
-        connection.commit()
-        print(f"Photo added (Observation {obs_id}")
-        return True
-    except Exception as e:
-        print(f"Database error inserting photo: {e}")
-        return False
     finally:
         cursor.close()
         connection.close()
