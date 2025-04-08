@@ -34,13 +34,11 @@ document.addEventListener("DOMContentLoaded", function () {
             const li = document.createElement("li");
             li.textContent = user.name;
             li.dataset.userId = user.id;
-            li.classList.add("user-item");
+            li.classList.add("dropdown-item");
 
             li.addEventListener("click", function () {
-                searchInput.value = this.textContent;
                 selectedUserId = this.dataset.userId;
-                goToUserButton.disabled = false;
-                resultsContainer.style.display = "none";
+                window.location.href = `/user/${selectedUserId}`;
             });
 
             resultsContainer.appendChild(li);
@@ -49,21 +47,4 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Error fetching users:", error);
     }
 });
-
-
-    goToUserButton.addEventListener("click", function () {
-        console.log("Redirecting to user:", selectedUserId); // 🛠 Debug
-
-        if (selectedUserId) {
-            window.location.href = `/user/${selectedUserId}`;
-        } else {
-            console.error(" user selected for redirection.");
-        }
-    });
-
-    document.addEventListener("click", function (event) {
-        if (!resultsContainer.contains(event.target) && event.target !== searchInput) {
-            resultsContainer.style.display = "none";
-        }
-    });
 });
