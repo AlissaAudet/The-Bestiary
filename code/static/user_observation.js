@@ -16,20 +16,24 @@ document.addEventListener("DOMContentLoaded", function () {
             return;
         }
 
-        const observationData = {
-            user_id: userId,
-            species: species,
-            timestamp: document.getElementById("timestamp").value,
-            behavior: document.getElementById("behavior").value,
-            description: document.getElementById("description").value,
-            pid: pid
-        };
+        const formData = new FormData();
+        formData.append("user_id", userId);
+        formData.append("species", species);
+        formData.append("timestamp", document.getElementById("timestamp").value);
+        formData.append("behavior", document.getElementById("behavior").value);
+        formData.append("description", document.getElementById("description").value);
+        formData.append("pid", pid);
+
+        const imageInput = document.getElementById("image");
+        if (imageInput.files.length > 0) {
+            formData.append("image", imageInput.files[0]);
+        }
 
         try {
             const response = await fetch(`/user/${userId}/observation`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(observationData)
+                body: formData
             });
 
             const result = await response.json();

@@ -11,7 +11,7 @@ connection = pymysql.connect(
 
 cursor = connection.cursor()
 
-cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+# cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
 cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
@@ -87,20 +87,21 @@ CREATE TABLE IF NOT EXISTS User (
 
     """,
     """
-    CREATE TABLE IF NOT EXISTS Photo (
-        pid INT NOT NULL,
-        observation_oid INT,
-        PRIMARY KEY(pid),
-        FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
-    );
-    """,
-    """
     CREATE TABLE IF NOT EXISTS Comment (
         cid INT NOT NULL,
         text VARCHAR(300),
         observation_oid INT,
         PRIMARY KEY(cid),
         FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
+    );
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS Photo (
+    pid INT NOT NULL AUTO_INCREMENT,
+    observation_oid INT NOT NULL,
+    image_data MEDIUMBLOB NOT NULL,
+    PRIMARY KEY(pid),
+    FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
     );
     """
 ]

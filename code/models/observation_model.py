@@ -1,19 +1,19 @@
 import pymysql
 from models.database import get_db_connection
 
-def insert_observation(user_id, species, timestamp, behavior, description, pid):
+def insert_observation(user_id, species, behavior, description, pid):
     connection = get_db_connection()
     cursor = connection.cursor()
 
     query = """
-        INSERT INTO Observation (author_uid, species, timestamp, behavior, description, pid)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO Observation (author_uid, species, behavior, description, pid)
+        VALUES (%s, %s, %s, %s, %s)
     """
 
     try:
-        cursor.execute(query, (user_id, species, timestamp, behavior, description, pid))
+        cursor.execute(query, (user_id, species, behavior, description, pid))
         connection.commit()
-        print(f"Observation added (User {user_id} - Species {species} at {timestamp})")
+        print(f"Observation added (User {user_id} - Species {species})")
         return True
     except Exception as e:
         print(f"Database error inserting observation: {e}")
@@ -21,6 +21,25 @@ def insert_observation(user_id, species, timestamp, behavior, description, pid):
     finally:
         cursor.close()
         connection.close()
+
+def insert_photo(obs_id, image_data) :
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    query = "INSERT INTO Photo (obs_id, image_data) VALUES (%s, %s)"
+
+    try:
+        cursor.execute(query, (obs_id, image_data))
+        connection.commit()
+        print(f"Photo added (Observation {obs_id}")
+        return True
+    except Exception as e:
+        print(f"Database error inserting photo: {e}")
+        return False
+    finally:
+        cursor.close()
+        connection.close()
+
 
 def fetch_observations_by_user(user_id):
     connection = get_db_connection()
