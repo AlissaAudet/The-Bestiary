@@ -60,7 +60,8 @@ CREATE TABLE IF NOT EXISTS User (
         'Gaspésie–Îles-de-la-Madeleine', 'Lanaudière', 'Laurentides', 'Laval', 
         'Mauricie', 'Montérégie', 'Nord-du-Québec', 'Outaouais', 'Saguenay–Lac-Saint-Jean', 'Default'
     ),
-    climate ENUM('Humid Continental', 'Subarctic', 'Arctic', 'Boreal', 'Temperate', 'Default'),  
+    climate VARCHAR(100),
+    koppen_geiger_zone VARCHAR(10),  
     PRIMARY KEY (pid),  
     UNIQUE(name, latitude, longitude)  
 );
