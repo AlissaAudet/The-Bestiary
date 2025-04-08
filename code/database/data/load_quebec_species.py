@@ -71,7 +71,7 @@ def load_quebec_species():
         phylum = "Chordata"
         kingdom = "Animal"
 
-        description = (record.get("Commentaires") or "").strip()
+        description = (record.get("Commentaires") or "").strip()[:500]
 
         try:
             cursor.execute(insert_query,

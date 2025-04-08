@@ -11,7 +11,7 @@ connection = pymysql.connect(
 
 cursor = connection.cursor()
 
-# cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
 cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
