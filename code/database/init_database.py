@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS User (
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     age INT NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL DEFAULT '',
     user_type ENUM('Scientist', 'Passionate') NOT NULL,
     account_creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     observation_count INT DEFAULT 0,
@@ -54,8 +54,8 @@ CREATE TABLE IF NOT EXISTS User (
     admin_region ENUM(
         'Abitibi-Témiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 
         'Centre-du-Québec', 'Chaudière-Appalaches', 'Côte-Nord', 'Estrie', 
-        'Gaspésie–Îles-de-la-Madeleine', 'Lanaudière', 'Laurentides', 'Laval', 
-        'Mauricie', 'Montérégie', 'Nord-du-Québec', 'Outaouais', 'Saguenay–Lac-Saint-Jean', 'Default'
+        'Gaspésie-Îles-de-la-Madeleine', 'Lanaudière', 'Laurentides', 'Laval', 
+        'Mauricie', 'Montérégie', 'Nord-du-Québec', 'Outaouais', 'Saguenay-Lac-Saint-Jean', 'Default'
     ),
     climate ENUM('Humid Continental', 'Subarctic', 'Arctic', 'Boreal', 'Temperate', 'Default'),  
     PRIMARY KEY (pid),  
@@ -120,8 +120,8 @@ for query in create_tables:
     except Exception as e:
         print(f"Error :\n{query}\nErreur: {e}")
         exit(1)
-try:
-    trigger_sql = """
+
+triggers_sql =[ """
     CREATE TRIGGER after_note_insert AFTER INSERT ON Note
     FOR EACH ROW
     BEGIN
@@ -131,13 +131,78 @@ try:
 
     UPDATE Observation
     SET note = avg_rating WHERE oid = NEW.observation_oid;
+    END;
     """
-    cursor.execute(trigger_sql)
-    connection.commit()
+    ,   
+    """
+    CREATE TRIGGER observation_count_update_insert
+    AFTER INSERT ON Observation
+    FOR EACH ROW
+    BEGIN
+    UPDATE User
+    SET observation_count = observation_count + 1
+    WHERE uid = NEW.author_uid;
+    END;
+    """
+,
+    """
+    CREATE TRIGGER observation_count_update_delete
+    AFTER DELETE ON Observation
+    FOR EACH ROW
+    BEGIN
+    UPDATE User
+    SET observation_count = observation_count - 1
+    WHERE uid = NEW.author_uid;
+    END;
+    """
+,
 
-except pymysql.MySQLError as e:
-    print(f"Error: {e}")
+    """
+    CREATE TRIGGER filter_language BEFORE INSERT ON Comment
+    FOR EACH ROW
+    BEGIN
+    IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
+    END IF;
+    END;
+    """
+    ,
+    """
+    CREATE TRIGGER filter_language BEFORE UPDATE ON Comment
+    FOR EACH ROW
+    BEGIN
+    IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
+    END IF;
+    END;
+    """
+]
+for trigger in triggers_sql:
+    try:
+        cursor.execute(trigger)
+        connection.commit()
 
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+
+index_sql = [
+    """
+    CREATE INDEX user_name ON User(first_name, last_name);
+    """
+    ,
+    """
+    CREATE INDEX observed_species ON Observation(species);
+    """
+]
+
+for index in index_sql:
+    try:
+        cursor.execute(index)
+        connection.commit()
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
 
 print("All BD created")
 
