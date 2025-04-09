@@ -3,22 +3,25 @@ from models.place_model import get_place_by_coordinates, insert_place, get_place
 
 place_bp = Blueprint("place", __name__)
 
-
 @place_bp.route("/api/places/search", methods=["GET"])
-def fetch_place():
-    place_name = request.args.get("place_name", "").strip()
-    latitude = request.args.get("latitude")
-    longitude = request.args.get("longitude")
+def search_place():
+    latitude = request.args.get("latitude", type=float)
+    longitude = request.args.get("longitude", type=float)
+    name = request.args.get("place_name", type=str)
 
-    if not latitude or not longitude:
-        return jsonify({"error": "Latitude and longitude are required"}), 400
+    if latitude is None or longitude is None or name is None:
+        return jsonify({"error": "Missing parameters"}), 400
 
-    pid = get_place_by_coordinates(latitude, longitude, place_name)
+    try:
+        pid = get_place_by_coordinates(latitude, longitude, name)
+        if pid:
+            return jsonify({"exists": True, "pid": pid})
+        else:
+            return jsonify({"exists": False})
+    except Exception as e:
+        print("Error in /api/places/search:", e)
+        return jsonify({"exists": False, "error": str(e)}), 500
 
-    if pid is not None:
-        return jsonify({"exists": True, "pid": pid})
-    else:
-        return jsonify({"exists": False})
 
 
 

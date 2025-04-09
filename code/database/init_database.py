@@ -47,26 +47,23 @@ CREATE TABLE IF NOT EXISTS User (
         PRIMARY KEY(latin_name)
     );
     """,
-
     """
     CREATE TABLE IF NOT EXISTS Place (
     pid INT NOT NULL AUTO_INCREMENT, 
     name VARCHAR(100),                      
     latitude DOUBLE NOT NULL CHECK (latitude BETWEEN -90 AND 90), 
-    longitude DOUBLE NOT NULL CHECK (longitude BETWEEN -180 AND 180), 
-    admin_region ENUM(
-        'Abitibi-Témiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 
-        'Centre-du-Québec', 'Chaudière-Appalaches', 'Côte-Nord', 'Estrie', 
-        'Gaspésie–Îles-de-la-Madeleine', 'Lanaudière', 'Laurentides', 'Laval', 
-        'Mauricie', 'Montérégie', 'Nord-du-Québec', 'Outaouais', 'Saguenay–Lac-Saint-Jean', 'Default'
-    ),
-    climate VARCHAR(200),
-    koppen_geiger_zone VARCHAR(10),  
-    PRIMARY KEY (pid),  
-    UNIQUE(name, latitude, longitude)  
+    longitude DOUBLE NOT NULL CHECK (longitude BETWEEN -180 AND 180),  
+    PRIMARY KEY (pid) 
 );
-
-
+    """,
+    """
+    CREATE TABLE ClimateRegion (
+    latitude DOUBLE NOT NULL,
+    longitude DOUBLE NOT NULL,
+    climate VARCHAR(200),
+    koppen_geiger_zone VARCHAR(10),
+    PRIMARY KEY(latitude, longitude)
+);
 
     """,
     """
@@ -106,12 +103,31 @@ CREATE TABLE IF NOT EXISTS User (
     """
 ]
 
+create_index = [
+    """
+    CREATE INDEX idx_user_first_name ON User(first_name);
+    """,
+    """
+    CREATE INDEX idx_observation_species ON Observation(species);
+    """,
+    """
+    CREATE INDEX idx_place_lat_long ON Place(latitude, longitude);
+    """
+
+]
+
 for query in create_tables:
     try:
         cursor.execute(query)
     except Exception as e:
         print(f"Error :\n{query}\nErreur: {e}")
         exit(1)
+
+for index_query in create_index:
+    try:
+        cursor.execute(index_query)
+    except Exception as e:
+        print(f" Error:\n{index_query}\nErreur: {e}")
 
 
 print("All BD created")
