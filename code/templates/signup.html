@@ -1,37 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Sign Up</title>
     <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef1f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .page-container {
+            display: flex;
+            flex-direction: row;
+            gap: 40px;
+            align-items: stretch;
+            justify-content: center;
+            max-width: 1200px;
+            width: 100%;
+            height: 90vh;
+        }
+
+        #signup-form {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 550px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        button[type="submit"],
+        .return-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            font-size: 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+        button[type="submit"] {
+            background-color: #28a745;
+            color: white;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        .return-btn {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .return-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .image-container {
+            flex: 1;
+            height: 100%;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .owl-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        .form-body {
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+
+        @media (max-width: 900px) {
+            .page-container {
+                flex-direction: column;
+                height: auto;
+                align-items: center;
+            }
+
+            .image-container {
+                width: 100%;
+                height: auto;
+            }
+
+            .owl-image {
+                height: auto;
+                max-height: 300px;
+                object-fit: contain;
+            }
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Register a New User</h1>
+<div class="page-container">
     <form id="signup-form" onsubmit="signup(event)">
-        <label for="first-name">First Name:</label>
-        <input type="text" id="first-name" name="first-name" required><br>
+        <div class="form-body">
+            <h1>Register a New User</h1>
 
-        <label for="last-name">Last Name:</label>
-        <input type="text" id="last-name" name="last-name" required><br>
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" name="first-name" required>
 
-        <label for="email">email:</label>
-        <input type="text" id="email" name="email" required><br>
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" name="last-name" required>
 
-        <label for="age">Age:</label>
-        <input type="number" id="age" name="age" required><br>
+            <label for="email">Email:</label>
+            <input type="text" id="email" name="email" required>
 
-        <label for="user-type">User Type:</label>
-        <select id="user-type" name="user-type">
-            <option value="Scientist">Scientist</option>
-            <option value="Passionate">Passionate</option>
-        </select><br>
+            <label for="age">Age:</label>
+            <input type="number" id="age" name="age" required>
 
-        <label for="password">Password:</label>
-        <input type="text" id="password" name="password" required><br>
+            <label for="user-type">User Type:</label>
+            <select id="user-type" name="user-type">
+                <option value="Scientist">Scientist</option>
+                <option value="Passionate">Passionate</option>
+            </select>
 
-        <button type="submit">Apply</button><br><br>
+            <label for="password">Password:</label>
+            <input type="text" id="password" name="password" required>
+        </div>
+
+        <div class="form-footer">
+            <button type="submit">Apply</button>
+            <button type="button" class="return-btn" onclick="window.location.href='/'">Return To Home Page</button>
+        </div>
     </form>
-    <button onclick="window.location.href='/'">Return To Home Page</button>
+
+    <div class="image-container">
+        <img
+                class="owl-image"
+                src="https://www.metrowestdailynews.com/gcdn/authoring/2012/03/16/NMWD/ghows-WL-4d0dbd47-05db-4136-8dae-f050e61114aa-99415d05.jpeg?crop=1968,2623,x1386,y0"
+                alt="Owl Image"
+        />
+    </div>
+</div>
 </body>
 </html>
