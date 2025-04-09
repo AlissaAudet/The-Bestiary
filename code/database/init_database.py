@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS User (
         class_name VARCHAR(100),
         phylum VARCHAR(100),
         kingdom ENUM('Plant', 'Algae', 'Fungus', 'Animal'),
-        description VARCHAR(300),
+        description VARCHAR(500),
         PRIMARY KEY(latin_name)
     );
     """,
@@ -57,13 +57,21 @@ CREATE TABLE IF NOT EXISTS User (
         'Gaspésie-Îles-de-la-Madeleine', 'Lanaudière', 'Laurentides', 'Laval', 
         'Mauricie', 'Montérégie', 'Nord-du-Québec', 'Outaouais', 'Saguenay-Lac-Saint-Jean', 'Default'
     ),
-    climate ENUM('Humid Continental', 'Subarctic', 'Arctic', 'Boreal', 'Temperate', 'Default'),  
+    climate VARCHAR(200),
+    koppen_geiger_zone VARCHAR(10),  
     PRIMARY KEY (pid),  
     UNIQUE(name, latitude, longitude)  
 );
 
 
 
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS Photo (
+    photo_id INT NOT NULL AUTO_INCREMENT,
+    image_data MEDIUMBLOB NOT NULL,
+    PRIMARY KEY(photo_id)
+    );
     """,
     """
    CREATE TABLE IF NOT EXISTS Observation (
@@ -74,21 +82,15 @@ CREATE TABLE IF NOT EXISTS User (
     behavior ENUM('Sleeping', 'Eating', 'Hunting', 'Moving', 'Interacting') NOT NULL,
     description VARCHAR(500),
     pid INT NOT NULL,
+    photo_id INT NOT NULL,
     rating INT DEFAULT NULL,  
     PRIMARY KEY (oid),
     FOREIGN KEY (author_uid) REFERENCES User(uid),
     FOREIGN KEY (species) REFERENCES Species(latin_name),
-    FOREIGN KEY (pid) REFERENCES Place(pid)
+    FOREIGN KEY (pid) REFERENCES Place(pid),
+    FOREIGN KEY (photo_id) REFERENCES Photo(photo_id)
 );
 
-    """,
-    """
-    CREATE TABLE IF NOT EXISTS Photo (
-        pid INT NOT NULL,
-        observation_oid INT,
-        PRIMARY KEY(pid),
-        FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
-    );
     """,
     """
     CREATE TABLE IF NOT EXISTS Comment (
@@ -112,6 +114,16 @@ CREATE TABLE IF NOT EXISTS User (
     );
     """
 
+    """,
+    """
+    CREATE TABLE IF NOT EXISTS Photo (
+    pid INT NOT NULL AUTO_INCREMENT,
+    obs_id INT NOT NULL,
+    image_data MEDIUMBLOB NOT NULL,
+    PRIMARY KEY(pid),
+    FOREIGN KEY(obs_id) REFERENCES Observation(oid)
+    );
+    """
 ]
 
 for query in create_tables:

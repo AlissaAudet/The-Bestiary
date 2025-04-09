@@ -2,26 +2,31 @@ import pymysql
 from models.database import get_db_connection
 from models.place_model import get_place_by_coordinates
 
-def insert_observation(user_id, species, timestamp, behavior, description, pid):
+
+def insert_observation(user_id, species, timestamp, behavior, description, pid, photo_id):
     connection = get_db_connection()
     cursor = connection.cursor()
 
     query = """
-        INSERT INTO Observation (author_uid, species, timestamp, behavior, description, pid)
-        VALUES (%s, %s, %s, %s, %s, %s)
+        INSERT INTO Observation (author_uid, species, timestamp, behavior, description, pid, photo_id)
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
     """
 
     try:
-        cursor.execute(query, (user_id, species, timestamp, behavior, description, pid))
+
+        cursor.execute(query, (user_id, species, timestamp, behavior, description, pid, photo_id))
         connection.commit()
-        print(f"Observation added (User {user_id} - Species {species} at {timestamp})")
         return True
+
     except Exception as e:
-        print(f"Database error inserting observation: {e}")
+        print("ERROR:", e)
+        connection.rollback()
         return False
+
     finally:
         cursor.close()
         connection.close()
+
 
 def fetch_observations_by_user(user_id):
     connection = get_db_connection()
