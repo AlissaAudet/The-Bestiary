@@ -9,12 +9,17 @@ document.addEventListener("DOMContentLoaded", function () {
         const longitude = parseFloat(document.getElementById("longitude").value);
         const placeName = document.getElementById("place_name").value.trim() || "Unnamed Place";
         const species = document.getElementById("species").value;
+        const imageInput = document.getElementById("image");
 
         const pid = await getOrCreatePlace(latitude, longitude, placeName);
         if (!pid) {
             alert("Error: Could not create or find a place.");
             return;
         }
+
+        const photo_id = await createImage(imageInput)
+
+        console.log(photo_id)
 
         const formData = new FormData();
         formData.append("user_id", userId);
@@ -23,11 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
         formData.append("behavior", document.getElementById("behavior").value);
         formData.append("description", document.getElementById("description").value);
         formData.append("pid", pid);
-
-        const imageInput = document.getElementById("image");
-        if (imageInput.files.length > 0) {
-            formData.append("image", imageInput.files[0]);
-        }
+        formData.append("photo_id", photo_id)
 
         try {
             const response = await fetch(`/user/${userId}/observation`, {
@@ -36,6 +37,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
 
             const result = await response.json();
+            console.log("Server response:", result);
             alert(result.message || result.error);
             if (response.ok) {
                 window.location.href = `/user/${userId}`;
@@ -63,8 +65,8 @@ async function getOrCreatePlace(latitude, longitude, placeName) {
 
         let newPlaceResponse = await fetch("/api/places", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ place_name: placeName, latitude, longitude })
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({place_name: placeName, latitude, longitude})
         });
 
         let newPlaceData = await newPlaceResponse.json();
@@ -75,6 +77,40 @@ async function getOrCreatePlace(latitude, longitude, placeName) {
         return null;
     }
 }
+
+async function createImage(imageInput) {
+    const file = imageInput.files[0];
+    if (!file) {
+        alert("Please select an image before submitting.");
+        return null;
+    }
+
+    const formData = new FormData();
+    formData.append("image", file);
+
+    try {
+        const response = await fetch("/api/photo", {
+            method: "POST",
+            body: formData
+        });
+
+        const contentType = response.headers.get("content-type");
+        if (!contentType || !contentType.includes("application/json")) {
+            const text = await response.text();
+            console.error("Invalid JSON response:", text);
+            throw new Error("Invalid JSON response from /api/photo");
+        }
+
+        const data = await response.json();
+        return data.photo_id || null;
+
+    } catch (error) {
+    console.error("Error creating photo:", error);
+    alert("Failed to upload image. Please try again.");
+    return null;
+    }
+}
+
 
 function setupSpeciesSearch() {
     const searchInput = document.getElementById("species-search");

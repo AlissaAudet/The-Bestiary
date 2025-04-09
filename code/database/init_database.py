@@ -67,6 +67,13 @@ CREATE TABLE IF NOT EXISTS User (
 
     """,
     """
+    CREATE TABLE IF NOT EXISTS Photo (
+    photo_id INT NOT NULL AUTO_INCREMENT,
+    image_data MEDIUMBLOB NOT NULL,
+    PRIMARY KEY(photo_id)
+    );
+    """,
+    """
    CREATE TABLE IF NOT EXISTS Observation (
     oid INT NOT NULL AUTO_INCREMENT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -75,11 +82,13 @@ CREATE TABLE IF NOT EXISTS User (
     behavior ENUM('Sleeping', 'Eating', 'Hunting', 'Moving', 'Interacting') NOT NULL,
     description VARCHAR(500),
     pid INT NOT NULL,
+    photo_id INT NOT NULL,
     rating INT DEFAULT NULL,  
     PRIMARY KEY (oid),
     FOREIGN KEY (author_uid) REFERENCES User(uid),
     FOREIGN KEY (species) REFERENCES Species(latin_name),
-    FOREIGN KEY (pid) REFERENCES Place(pid)
+    FOREIGN KEY (pid) REFERENCES Place(pid),
+    FOREIGN KEY (photo_id) REFERENCES Photo(photo_id)
 );
 
     """,
