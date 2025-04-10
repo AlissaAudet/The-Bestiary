@@ -59,8 +59,7 @@ CREATE TABLE IF NOT EXISTS User (
     ),
     climate VARCHAR(200),
     koppen_geiger_zone VARCHAR(10),  
-    PRIMARY KEY (pid),  
-    UNIQUE(name, latitude, longitude)  
+    PRIMARY KEY (pid) 
 );
 
 
@@ -114,7 +113,7 @@ CREATE TABLE IF NOT EXISTS User (
     );
     """
 
-    """,
+    ,
     """
     CREATE TABLE IF NOT EXISTS Photo (
     pid INT NOT NULL AUTO_INCREMENT,
@@ -164,13 +163,13 @@ triggers_sql =[ """
     BEGIN
     UPDATE User
     SET observation_count = observation_count - 1
-    WHERE uid = NEW.author_uid;
+    WHERE uid = OLD.author_uid;
     END;
     """
 ,
 
     """
-    CREATE TRIGGER filter_language BEFORE INSERT ON Comment
+    CREATE TRIGGER filter_language_comment_insert BEFORE INSERT ON Comment
     FOR EACH ROW
     BEGIN
     IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
@@ -181,7 +180,7 @@ triggers_sql =[ """
     """
     ,
     """
-    CREATE TRIGGER filter_language BEFORE UPDATE ON Comment
+    CREATE TRIGGER filter_language_update BEFORE UPDATE ON Comment
     FOR EACH ROW
     BEGIN
     IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
