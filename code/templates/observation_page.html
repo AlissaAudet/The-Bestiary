@@ -3,17 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='observation_page.js') }}" defer></script>
     <title>Observation Details</title>
 </head>
 <body>
-    <h1>Animal Observation</h1>
+<input type="hidden" id="logged-in-uid" value="{{ uid | default('') }}">
+    <h1>Animal Observation by {{ observation.first_name }} {{ observation.last_name }}</h1>
 
-    {% if observation %}
-        <h2>{{ observation.species }}</h2>
-        <p>{{ observation.description }}</p>
-    {% else %}
-        <p>No observation found.</p>
-    {% endif %}
+    <h2>{{ observation.species }} ({{ observation.species_name }})</h2>
+    <p>Description: {{ observation.description }}</p>
+    <p>Behavior: {{ observation.behavior }}</p>
+    <p>Place name: {{ observation.place_name }}</p>
+    <p>Administrative Region: {{ observation.admin_region}}</p>
+    <p>Coordinates: {{ observation.latitude }}, {{ observation.latitude }} </p>
+    <p>Climate: {{ observation.climate }} </p>
+    <p>Timestamp: {{ observation.timestamp }} </p>
+    <img src="data:image/jpeg;base64,{{ image_data }}" alt="Animal Image" />
+
+
+    <h3>
+        <textarea id="comment_box" rows="4" cols="50"></textarea>
+        <button id="post_comment_btn">Post comment</button>
+    </h3>
+
+    <ul id="comment-list">
+        {% for comment in comments %}
+            <li>{{ comment.first_name }} {{ comment.last_name }}: {{ comment.text }}</li>
+        {% endfor %}
+    </ul>
 
     <button onclick="window.location.href='/'">Back to Home</button>
     <button onclick="window.location.href = '/user/{{ observation.uid }}'">Author Page</button>
