@@ -9,13 +9,13 @@ def load_places():
     cursor = connection.cursor()
 
     places = [
-        ("Parc national de la Gaspésie", 48.9455, -66.3986, "Gaspésie–Îles-de-la-Madeleine", "Boreal"),
-        ("Mont Tremblant", 46.1181, -74.5962, "Laurentides", "Humid Continental"),
-        ("Parc national de la Jacques-Cartier", 47.1655, -71.2927, "Capitale-Nationale", "Subarctic")
+        ("Parc national de la Gaspésie", 48.9455, -66.3986),
+        ("Mont Tremblant", 46.1181, -74.5962),
+        ("Parc national de la Jacques-Cartier")
     ]
 
     query = """
-        INSERT INTO Place (name, latitude, longitude, admin_region, climate) 
+        INSERT INTO Place (name, latitude, longitude) 
         VALUES (%s, %s, %s, %s, %s)
     """
 
