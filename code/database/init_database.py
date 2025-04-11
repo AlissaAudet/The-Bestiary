@@ -66,13 +66,6 @@ CREATE TABLE IF NOT EXISTS User (
 
     """,
     """
-    CREATE TABLE IF NOT EXISTS Photo (
-    photo_id INT NOT NULL AUTO_INCREMENT,
-    image_data MEDIUMBLOB NOT NULL,
-    PRIMARY KEY(photo_id)
-    );
-    """,
-    """
    CREATE TABLE IF NOT EXISTS Observation (
     oid INT NOT NULL AUTO_INCREMENT,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -106,7 +99,7 @@ CREATE TABLE IF NOT EXISTS User (
         nid INT NOT NULL,
         observation_oid INT NOT NULL,
         user_uid INT NOT NULL,
-        note INT,
+        note INT CHECK (not BETWEEN 0 AND 5),
         PRIMARY KEY(nid),
         FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
         FOREIGN KEY(user_uid) REFERENCES User(uid)
