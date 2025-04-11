@@ -5,7 +5,6 @@
     <title>The Bestiary</title>
     <script src="{{ url_for('static', filename='index.js') }}" defer></script>
     <style>
-        /* Reset & Global Styles */
         * {
             margin: 0;
             padding: 0;
@@ -18,9 +17,8 @@
             color: #333;
         }
 
-        /* Header Styling (inspired by your Vue example) */
         header.color-secondary {
-            background-color: #bc772d; /* Secondary background */
+            background-color: #bc772d;
             padding: 1.5rem 0;
         }
 
@@ -34,7 +32,7 @@
         }
 
         header h1.display-4 {
-            font-size: 3rem; /* Large display font */
+            font-size: 3rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
         }
@@ -46,21 +44,19 @@
             margin-bottom: 0;
         }
 
-        /* Banner Image Section */
         .banner {
             width: 100%;
-            height: 200px; /* Fixed vertical space */
+            height: 200px;
             overflow: hidden;
         }
 
         .banner img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Crop the image as needed */
+            object-fit: cover;
             display: block;
         }
 
-        /* Main Content Container */
         .content {
             max-width: 800px;
             margin: 30px auto;
@@ -71,11 +67,10 @@
             text-align: center;
         }
 
-        /* Updated User Search Section */
         .search-container {
             margin: 20px auto;
             width: 100%;
-            max-width: 400px; /* Constrain the width to integrate nicely */
+            max-width: 400px;
             position: relative;
         }
 
@@ -134,7 +129,6 @@
             cursor: not-allowed;
         }
 
-        /* Navigation Buttons */
         .nav-buttons {
             margin-top: 40px;
             display: flex;
@@ -177,7 +171,6 @@
     </style>
 </head>
 <body>
-<!-- Header Section -->
 <header class="color-secondary">
     <div class="container-fluid">
         <h1 class="display-4 fw-bolder">The Bestiary</h1>
@@ -187,13 +180,10 @@
     </div>
 </header>
 
-<!-- Banner Image Section -->
 <div class="banner">
-    <!-- Replace with your actual image path -->
     <img src="{{ url_for('static', filename='pictures/photo_home.png') }}" alt="Banner Image">
 </div>
 
-<!-- Main Content -->
 <div class="content">
     <div class="search-container">
         <label for="user-search">Search user:</label>
