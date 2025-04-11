@@ -103,18 +103,6 @@ CREATE TABLE IF NOT EXISTS User (
     """
 ]
 
-create_index = [
-    """
-    CREATE INDEX idx_user_first_name ON User(first_name);
-    """,
-    """
-    CREATE INDEX idx_observation_species ON Observation(species);
-    """,
-    """
-    CREATE INDEX idx_place_lat_long ON Place(latitude, longitude);
-    """
-
-]
 
 for query in create_tables:
     try:
@@ -122,12 +110,6 @@ for query in create_tables:
     except Exception as e:
         print(f"Error :\n{query}\nErreur: {e}")
         exit(1)
-
-for index_query in create_index:
-    try:
-        cursor.execute(index_query)
-    except Exception as e:
-        print(f" Error:\n{index_query}\nErreur: {e}")
 
 
 print("All BD created")
