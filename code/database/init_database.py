@@ -62,9 +62,15 @@ CREATE TABLE IF NOT EXISTS User (
     PRIMARY KEY (pid) 
 );
 
-
-
     """,
+     """
+    CREATE TABLE IF NOT EXISTS Photo (
+    photo_id INT NOT NULL AUTO_INCREMENT,
+    image_data MEDIUMBLOB NOT NULL,
+    PRIMARY KEY(photo_id)
+    );
+    """
+    ,
     """
    CREATE TABLE IF NOT EXISTS Observation (
     oid INT NOT NULL AUTO_INCREMENT,
@@ -99,21 +105,10 @@ CREATE TABLE IF NOT EXISTS User (
         nid INT NOT NULL,
         observation_oid INT NOT NULL,
         user_uid INT NOT NULL,
-        note INT CHECK (not BETWEEN 0 AND 5),
+        rating INT CHECK (rating BETWEEN 0 AND 5),
         PRIMARY KEY(nid),
         FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
         FOREIGN KEY(user_uid) REFERENCES User(uid)
-    );
-    """
-
-    ,
-    """
-    CREATE TABLE IF NOT EXISTS Photo (
-    pid INT NOT NULL AUTO_INCREMENT,
-    obs_id INT NOT NULL,
-    image_data MEDIUMBLOB NOT NULL,
-    PRIMARY KEY(pid),
-    FOREIGN KEY(obs_id) REFERENCES Observation(oid)
     );
     """
 ]
@@ -126,20 +121,20 @@ for query in create_tables:
         exit(1)
 
 triggers_sql =[ """
-    CREATE TRIGGER after_note_insert AFTER INSERT ON Note
+    CREATE TRIGGER IF NOT EXISTS after_note_insert AFTER INSERT ON Note
     FOR EACH ROW
     BEGIN
     DECLARE avg_rating FLOAT;
-    SELECT AVG(N.note) INTO avg_rating
+    SELECT AVG(N.rating) INTO avg_rating
     FROM Note N WHERE observation_oid = NEW.observation_oid;
 
     UPDATE Observation
-    SET note = avg_rating WHERE oid = NEW.observation_oid;
+    SET rating = avg_rating WHERE oid = NEW.observation_oid;
     END;
     """
     ,   
     """
-    CREATE TRIGGER observation_count_update_insert
+    CREATE TRIGGER IF NOT EXISTS observation_count_update_insert
     AFTER INSERT ON Observation
     FOR EACH ROW
     BEGIN
@@ -150,7 +145,7 @@ triggers_sql =[ """
     """
 ,
     """
-    CREATE TRIGGER observation_count_update_delete
+    CREATE TRIGGER IF NOT EXISTS observation_count_update_delete
     AFTER DELETE ON Observation
     FOR EACH ROW
     BEGIN
@@ -162,7 +157,7 @@ triggers_sql =[ """
 ,
 
     """
-    CREATE TRIGGER filter_language_comment_insert BEFORE INSERT ON Comment
+    CREATE TRIGGER IF NOT EXISTS filter_language_comment_insert BEFORE INSERT ON Comment
     FOR EACH ROW
     BEGIN
     IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
@@ -173,7 +168,7 @@ triggers_sql =[ """
     """
     ,
     """
-    CREATE TRIGGER filter_language_update BEFORE UPDATE ON Comment
+    CREATE TRIGGER IF NOT EXISTS filter_language_update BEFORE UPDATE ON Comment
     FOR EACH ROW
     BEGIN
     IF LOWER(NEW.text) LIKE '%%fuck%%' THEN

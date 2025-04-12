@@ -11,14 +11,14 @@ def add_observation_rating(oid):
         return jsonify({"error": "Must submit a valid rating."}), 400
     
     nid = data.get("nid")
-    observation_oid = data.get("obersation_oid")
+    observation_oid = oid
     user_uid = data.get("user.uid")
-    note = data.get("note")
+    rating = data.get("note")
 
-    if not all([nid, observation_oid, user_uid, note]):
+    if not all([nid, observation_oid, user_uid, rating]):
         return jsonify({"error": "Missing required fields"}), 400
 
-    noteInsert = insert_note(nid, observation_oid, user_uid, note)
+    noteInsert = insert_note(nid, observation_oid, user_uid, rating)
 
     if noteInsert:
         return jsonify({"message": "Rating submitted successfully", "id": noteInsert}), 201

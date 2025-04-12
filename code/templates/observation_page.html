@@ -1,22 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Observation Details</title>
+  <meta charset="UTF-8">
+  <title>Observation Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="{{ url_for('static', filename='rating.js') }}" defer></script>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef1f5;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+    }
+
+    .layout-container {
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      width: 100%;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+
+    .content-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
+      margin-bottom: 20px;
+    }
+
+    h1, h2 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    p {
+      margin: 10px 0 20px;
+    }
+
+    button {
+      padding: 12px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      color: white;
+      margin-right: 10px;
+    }
+
+    .back-btn { background-color: #6c757d; }
+    .back-btn:hover { background-color: #5a6268; }
+    .author-btn { background-color: #007bff; }
+    .author-btn:hover { background-color: #0056b3; }
+    .rate-btn { background-color: #28a745; }
+    .rate-btn:hover { background-color: #218838; }
+    .submit-rating-btn { background-color: #ffc107; color: #000; }
+    .submit-rating-btn:hover { background-color: #e0a800; }
+
+    #rating-section {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Animal Observation</h1>
+  <div class="layout-container">
+    <div class="content-box">
+      <h1>Animal Observation</h1>
 
-    {% if observation %}
+      {% if observation %}
         <h2>{{ observation.species }}</h2>
         <p>{{ observation.description }}</p>
-    {% else %}
+      {% else %}
         <p>No observation found.</p>
-    {% endif %}
+      {% endif %}
 
-    <button onclick="window.location.href='/'">Back to Home</button>
-    <button onclick="window.location.href = '/user/{{ observation.uid }}'">Author Page</button>
+      <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
+      <button class="author-btn" onclick="window.location.href = '/user/{{ observation.uid }}'">Author Page</button>
+      <button class="rate-btn" onclick="toggleRating()">Rate this observation</button>
 
+      <div id="rating-section">
+        <input type="hidden" id="observation-id" value="{{ observation.oid }}">
+        <input type="hidden" id="user-id" value="{{ observation.uid }}">
+
+        <label for="rating-slider">Your Rating: <span id="slider-value">3</span> ⭐</label>
+        <input type="range" id="rating-slider" min="0" max="5" step="1" value="3" oninput="updateSliderValue()">
+
+        <br><br>
+        <button class="submit-rating-btn" onclick="submitRating()">Submit Rating</button>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
