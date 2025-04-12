@@ -11,8 +11,13 @@ def load_observations():
 
     observations = [
         # User 1 (stephanie)
-        ("2024-04-01 10:00:00", 1, "Odocoileus virginianus", "Interacting", "near the lake", 1, 2)
-        # User 2
+        ("2024-04-01 10:00:00", 1, "Odocoileus virginianus", "Interacting", "near the lake", 1, 1),
+        ("2023-08-01 10:00:00", 1, "Bubo scandiacus", "Hunting", "was hunting", 2, 2),
+        ("2023-10-01 10:00:00", 1, "Marmota monax", "Interacting", "Defended its territory", 3, 3),
+        # User 2 (martine)
+        ("2024-06-01 10:00:00", 2, "Anaxyrus americanus", "Moving", "3 inches long", 4, 4),
+        ("2024-08-01 10:00:00", 2, "Ardea alba", "Hunting", "", 5, 5),
+        ("2025-03-01 10:00:00", 2, "Sciurus carolinensis", "Eating", "Cold Day", 6,6)
     ]
 
     try:
