@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, render_template, request, make_response, redirect, url_for
+from flask import Blueprint, jsonify, render_template, request, make_response, redirect, url_for, session
 import bcrypt
 import jwt
 import datetime
@@ -114,11 +114,13 @@ def login_user():
         "token": token,
         "user_id": user["uid"]
     }))
+    session["uid"] = user["uid"]
     response.set_cookie("auth_token", token, httponly=True, secure=True, samesite="None")
     return response
 
 @user_bp.route("/logout", methods=["POST"])
 def logout_user():
+    session.pop("uid", None)
     response = make_response(jsonify({"message": "Logged out successfully"}))
     response.set_cookie("auth_token", "", expires=0, httponly=True, secure=True, samesite="Lax")
     return response
