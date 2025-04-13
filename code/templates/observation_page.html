@@ -81,6 +81,11 @@
       {% if observation %}
         <h2>{{ observation.species }}</h2>
         <p>{{ observation.description }}</p>
+        {% if observation.rating is not none %}
+          <p><strong>Average Rating:</strong> {{ observation.rating }} ⭐</p>
+        {% else %}
+          <p><strong>Average Rating:</strong> Not rated yet</p>
+  {% endif %}
       {% else %}
         <p>No observation found.</p>
       {% endif %}
