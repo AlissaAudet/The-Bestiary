@@ -135,9 +135,27 @@ triggers_sql =[ """
     UPDATE Observation
     SET rating = avg_rating
     WHERE oid = NEW.observation_oid;
-END
+    END
     """
     ,   
+    """
+    CREATE TRIGGER after_note_update
+    AFTER UPDATE ON Note
+    FOR EACH ROW
+    BEGIN
+    DECLARE avg_rating FLOAT;
+
+    SELECT AVG(N.rating)
+    INTO avg_rating
+    FROM Note N
+    WHERE N.observation_oid = NEW.observation_oid;
+
+    UPDATE Observation
+    SET rating = avg_rating
+    WHERE oid = NEW.observation_oid;
+    END
+    """
+    ,
     """
     CREATE TRIGGER observation_count_update_insert
     AFTER INSERT ON Observation
