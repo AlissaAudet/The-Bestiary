@@ -44,23 +44,22 @@ CREATE TABLE IF NOT EXISTS User (
         PRIMARY KEY(latin_name)
     );
     """,
+
     """
     CREATE TABLE IF NOT EXISTS Place (
     pid INT NOT NULL AUTO_INCREMENT, 
     name VARCHAR(100),                      
     latitude DOUBLE NOT NULL CHECK (latitude BETWEEN -90 AND 90), 
-    longitude DOUBLE NOT NULL CHECK (longitude BETWEEN -180 AND 180),  
-    PRIMARY KEY (pid) 
-);
-    """,
-    """
-    CREATE TABLE ClimateRegion (
-    latitude DOUBLE NOT NULL,
-    longitude DOUBLE NOT NULL,
+    longitude DOUBLE NOT NULL CHECK (longitude BETWEEN -180 AND 180), 
+    admin_region ENUM(
+        'Abitibi-Témiscamingue', 'Bas-Saint-Laurent', 'Capitale-Nationale', 
+        'Centre-du-Québec', 'Chaudière-Appalaches', 'Côte-Nord', 'Estrie', 
+        'Gaspésie-Îles-de-la-Madeleine', 'Lanaudière', 'Laurentides', 'Laval', 
+        'Mauricie', 'Montérégie', 'Nord-du-Québec', 'Outaouais', 'Saguenay-Lac-Saint-Jean', 'Default'
+    ),
     climate VARCHAR(200),
-    koppen_geiger_zone VARCHAR(10),
-    PRIMARY KEY(latitude, longitude)
-
+    koppen_geiger_zone VARCHAR(10),  
+    PRIMARY KEY (pid) 
 );
 
     """,
@@ -93,13 +92,11 @@ CREATE TABLE IF NOT EXISTS User (
     """,
     """
     CREATE TABLE IF NOT EXISTS Comment (
-        cid INT AUTO_INCREMENT NOT NULL,
+        cid INT NOT NULL,
         text VARCHAR(300),
         observation_oid INT,
-        commenter_uid INT,
         PRIMARY KEY(cid),
-        FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
-        FOREIGN KEY(commenter_uid) REFERENCES User(uid)
+        FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
     );
     """,
 
@@ -115,7 +112,6 @@ CREATE TABLE IF NOT EXISTS User (
     );
     """
 ]
-
 
 for query in create_tables:
     try:
