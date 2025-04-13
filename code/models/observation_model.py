@@ -83,7 +83,7 @@ def fetch_observation_by_id(oid):
     try:
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
-                SELECT o.oid, o.timestamp, o.description, o.behavior, s.name AS species_name, s.latin_name AS species, u.first_name, u.last_name, u.uid, f.image_data, p.name AS place_name, p.latitude, p.longitude, p.admin_region, p.climate
+                SELECT o.oid, o.timestamp, o.description, o.behavior, s.name AS species_name, s.latin_name AS species, u.first_name, u.last_name, u.uid, f.image_data, p.name AS place_name, p.latitude, p.longitude
                 FROM Observation o
                 JOIN Species s ON o.species = s.latin_name
                 JOIN User u ON o.author_uid = u.uid

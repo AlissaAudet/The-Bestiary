@@ -14,7 +14,8 @@ def load_users():
     cursor = connection.cursor()
 
     users = [
-        ("a",	"a",	"a",	1,	"$2b$12$BaFgZ.WTVjy34VoFB3IMDeZ4cU4n60oi7gVCg5i1le02B2HvHQDcy")
+        ("Stephanie",	"Tremblay",	"stephanie@gmail.com",	20,	"$2b$12$W9gyS2gIGTkeYo1v0BXid.G5U9AZKk4K7jwzOB17JdyzwfyixKqYe"),
+        ("Martine", "Leclerc", "martine@gmail.com", 40, "$2b$12$W9gyS2gIGTkeYo1v0BXid.G5U9AZKk4K7jwzOB17JdyzwfyixKqYe")
     ]
 
     query = """
