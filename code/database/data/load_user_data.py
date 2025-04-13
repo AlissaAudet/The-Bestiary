@@ -13,16 +13,8 @@ def load_users():
     cursor = connection.cursor()
 
     users = [
-        ("Alice", "Durand", "alice@example.com", 30, "Scientist"),
-        ("Bob", "Martin", "bob@example.com", 28, "Passionate"),
-        ("Charlie", "Lemoine", "charlie@example.com", 35, "Scientist"),
-        ("Diane", "Berger", "diane@example.com", 40, "Passionate"),
-        ("Eve", "Dupont", "eve@example.com", 25, "Scientist"),
-        ("François", "Moreau", "francois@example.com", 27, "Passionate"),
-        ("Gabrielle", "Leroy", "gabrielle@example.com", 33, "Scientist"),
-        ("Hugo", "Lefevre", "hugo@example.com", 29, "Passionate"),
-        ("Isabelle", "Girard", "isabelle@example.com", 32, "Scientist"),
-        ("Julien", "Renard", "julien@example.com", 26, "Passionate")
+        ("Stephanie",	"Tremblay",	"stephanie@gmail.com",	20,	"$2b$12$W9gyS2gIGTkeYo1v0BXid.G5U9AZKk4K7jwzOB17JdyzwfyixKqYe"),
+        ("Martine", "Leclerc", "martine@gmail.com", 40, "$2b$12$W9gyS2gIGTkeYo1v0BXid.G5U9AZKk4K7jwzOB17JdyzwfyixKqYe")
     ]
 
     query = """

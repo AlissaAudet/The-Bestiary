@@ -6,50 +6,65 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 });
 
-document.getElementById("signup-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("signup-form");
 
-    const firstName = document.getElementById("first-name").value.trim();
-    const lastName = document.getElementById("last-name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const age = parseInt(document.getElementById("age").value);
-    const userType = document.getElementById("user-type").value;
-    const password = document.getElementById("password").value.trim();
+    form.addEventListener("submit", function (event) {
+        event.preventDefault();
 
-    if (!firstName || !lastName || !email || isNaN(age) || !password) {
-        alert("Please fill in all fields correctly.");
-        return;
-    }
+        const firstName = document.getElementById("first-name").value.trim();
+        const lastName = document.getElementById("last-name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const age = parseInt(document.getElementById("age").value);
+        const userType = document.getElementById("user-type").value;
+        const password = document.getElementById("password").value.trim();
 
-    const userData = {
-        first_name: firstName,
-        last_name: lastName,
-        email: email,
-        age: age,
-        user_type: userType,
-        password: password
-    };
-
-    try {
-        const response = await fetch("/signup", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(userData)
-        });
-
-        const result = await response.json();
-        console.log("Server response:", result);
-
-        if (response.ok) {
-            alert("User registered successfully!");
-            window.location.href = "/login";
-        } else {
-            alert("Error: " + result.error);
+        const nameRegex = /^[A-Za-zÀ-ÿ\s\-']+$/;
+        if (!nameRegex.test(firstName) || !nameRegex.test(lastName)) {
+            alert("First name and last name must not contain numbers or symbols.");
+            return;
         }
-    } catch (error) {
-        console.error("Request failed", error);
-        alert("An error occurred. Please try again.");
-    }
+
+        const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+        const digits = password.match(/\d/g);
+        const hasTwoDigits = digits && digits.length >= 2;
+
+        if (password.length < 7 || !hasSpecialChar || !hasTwoDigits) {
+            alert("Password must be at least 7 characters long, include 1 special character and 2 digits.");
+            return;
+        }
+
+        const userData = {
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            age: age,
+            user_type: userType,
+            password: password
+        };
+
+        fetch("/signup", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(userData)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                alert("Error: " + data.error);
+            } else {
+                alert("User successfully registered!");
+                form.reset();
+                window.location.href = "/login";
+            }
+        })
+        .catch(error => {
+            console.error("Request failed:", error);
+            alert("An error occurred. Please try again.");
+        });
+    });
 });
 
 async function login(event) {
