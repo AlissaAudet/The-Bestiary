@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS User (
     description VARCHAR(500),
     pid INT NOT NULL,
     photo_id INT NOT NULL,
-    rating INT DEFAULT NULL,  
+    rating INT DEFAULT 0,  
     PRIMARY KEY (oid),
     FOREIGN KEY (author_uid) REFERENCES User(uid),
     FOREIGN KEY (species) REFERENCES Species(latin_name),
@@ -121,20 +121,25 @@ for query in create_tables:
         exit(1)
 
 triggers_sql =[ """
-    CREATE TRIGGER IF NOT EXISTS after_note_insert AFTER INSERT ON Note
+    CREATE TRIGGER after_note_insert
+    AFTER INSERT ON Note
     FOR EACH ROW
     BEGIN
     DECLARE avg_rating FLOAT;
-    SELECT AVG(N.rating) INTO avg_rating
-    FROM Note N WHERE observation_oid = NEW.observation_oid;
+
+    SELECT AVG(N.rating)
+    INTO avg_rating
+    FROM Note N
+    WHERE N.observation_oid = NEW.observation_oid;
 
     UPDATE Observation
-    SET rating = avg_rating WHERE oid = NEW.observation_oid;
-    END;
+    SET rating = avg_rating
+    WHERE oid = NEW.observation_oid;
+END
     """
     ,   
     """
-    CREATE TRIGGER IF NOT EXISTS observation_count_update_insert
+    CREATE TRIGGER observation_count_update_insert
     AFTER INSERT ON Observation
     FOR EACH ROW
     BEGIN
@@ -145,7 +150,7 @@ triggers_sql =[ """
     """
 ,
     """
-    CREATE TRIGGER IF NOT EXISTS observation_count_update_delete
+    CREATE TRIGGER observation_count_update_delete
     AFTER DELETE ON Observation
     FOR EACH ROW
     BEGIN
@@ -157,7 +162,7 @@ triggers_sql =[ """
 ,
 
     """
-    CREATE TRIGGER IF NOT EXISTS filter_language_comment_insert BEFORE INSERT ON Comment
+    CREATE TRIGGER filter_language_comment_insert BEFORE INSERT ON Comment
     FOR EACH ROW
     BEGIN
     IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
@@ -168,7 +173,7 @@ triggers_sql =[ """
     """
     ,
     """
-    CREATE TRIGGER IF NOT EXISTS filter_language_update BEFORE UPDATE ON Comment
+    CREATE TRIGGER filter_language_update BEFORE UPDATE ON Comment
     FOR EACH ROW
     BEGIN
     IF LOWER(NEW.text) LIKE '%%fuck%%' THEN

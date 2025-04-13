@@ -14,11 +14,11 @@ function submitRating() {
 
     const observationId = parseInt(document.getElementById('observation-id').value);
     const userId = parseInt(document.getElementById('user-id').value);
-    const noteId = Math.floor(Math.random() * 100000);  // Simulating an ID; replace with actual logic if needed
+    const noteId = Math.floor(Math.random() * 100000); 
 
     const payload = {
         nid: noteId,
-        obersation_oid: observationId,
+        observation_oid: observationId, 
         "user.uid": userId,
         note: rating
     };
@@ -34,6 +34,7 @@ function submitRating() {
     .then(data => {
         if (data.message) {
             alert(data.message);
+            location.reload(); 
         } else {
             alert("Error: " + (data.error || "Unknown error"));
         }
@@ -43,3 +44,4 @@ function submitRating() {
         alert("Something went wrong submitting the rating.");
     });
 }
+
