@@ -10,6 +10,7 @@ from routes.photo import photo_bp
 from routes.note import note_bp
 
 app = Flask(__name__)
+app.secret_key = "5Ax83rqBr9"
 app.register_blueprint(observation_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(species_bp)
