@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 
     <style>
-        body {
+        .componant {
             margin: 0;
             padding: 40px 20px;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -214,6 +214,8 @@
 </head>
 
 <body>
+{% include 'header.html' %}
+<div class="componant">
 <div class="form-layout">
     <form id="obs-form">
         <h2>Register a New Observation</h2>
@@ -266,6 +268,7 @@
             <img id="image-preview"
                  style="display: none; margin-top: 10px; max-width: 100%; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"/>
         </div>
+    </div>
     </div>
 </div>
 
