@@ -11,9 +11,9 @@ connection = pymysql.connect(
 
 cursor = connection.cursor()
 
-cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+#cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
-cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
+#cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
 cursor.execute("USE glo_2005_projet;")
 
@@ -102,6 +102,17 @@ CREATE TABLE IF NOT EXISTS User (
         FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
         FOREIGN KEY(commenter_uid) REFERENCES User(uid)
     );
+    """,
+    """
+    CREATE TABLE Followers (
+    follower_uid INT NOT NULL,
+    following_uid INT NOT NULL,
+    follow_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_uid, following_uid),
+    FOREIGN KEY (follower_uid) REFERENCES User(uid) ON DELETE CASCADE,
+    FOREIGN KEY (following_uid) REFERENCES User(uid) ON DELETE CASCADE
+);
+
     """
 ]
 

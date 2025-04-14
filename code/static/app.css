@@ -1,3 +1,31 @@
+:root {
+  --brown-1: #cd8755;
+}
+
+body {
+            font-family: Arial, sans-serif;
+            background: rgba(140, 63, 10, 0.35);
+            color: #333;
+        }
+.btn {
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: bold;
+  background-color: #fff;
+  color: var(--brown-1);
+  border: 2px solid #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.btn:hover {
+  background-color: var(--brown-1);
+  color: white;
+  border-color: white;
+}
+
+
 
 
 /*Ici mettre le .css global de l'app;*/

@@ -205,3 +205,18 @@ def fetch_comments_by_observation_id(observation_id):
     conn.close()
 
     return comments
+
+def fetch_latest_observations(limit=5):
+    connection = get_db_connection()
+    try:
+        with connection.cursor(pymysql.cursors.DictCursor) as cursor:
+            cursor.execute("""
+                SELECT o.oid, f.image_data
+                FROM Observation o
+                JOIN Photo f ON o.photo_id = f.photo_id
+                ORDER BY o.timestamp DESC
+                LIMIT %s
+            """, (limit,))
+            return cursor.fetchall()
+    finally:
+        connection.close()

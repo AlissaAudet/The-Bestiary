@@ -9,7 +9,9 @@ from models.observation_model import (
     fetch_observation_by_id,
     fetch_filtered_observations,
     fetch_comments_by_observation_id,
-    insert_comment)
+    insert_comment,
+    fetch_latest_observations
+)
 
 observation_bp = Blueprint("observation", __name__)
 
@@ -121,3 +123,15 @@ def post_comment_api(oid):
     else:
         return jsonify({"error": "Failed to post comment"}), 500
 
+
+@observation_bp.route("/api/observations/latest", methods=["GET"])
+def get_latest_observations():
+    from models.observation_model import fetch_latest_observations
+    latest = fetch_latest_observations(limit=5)
+
+    # Encode image_data for JSON serialization
+    for obs in latest:
+        if obs["image_data"]:
+            obs["image_data"] = base64.b64encode(obs["image_data"]).decode("utf-8")
+
+    return jsonify(latest)

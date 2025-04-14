@@ -5,14 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Observation Details</title>
   <script src="{{ url_for('static', filename='observation_page.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     body {
       font-family: 'Arial', sans-serif;
-      background-color: #f5f5f5;
       margin: 0;
       padding: 20px;
-      color: #333;
     }
     .container {
       max-width: 1200px;
@@ -61,14 +60,14 @@
       font-size: 1em;
       border: none;
       border-radius: 4px;
-      background-color: #007BFF;
+      background-color: #cd8755;
       color: #fff;
       cursor: pointer;
       margin: 10px 5px 10px 0;
       transition: background-color 0.3s ease;
     }
     .details-container button:hover {
-      background-color: #0056b3;
+      background-color: rgba(140, 63, 10, 0.35);
     }
     .details-container ul#comment-list {
       list-style: none;
