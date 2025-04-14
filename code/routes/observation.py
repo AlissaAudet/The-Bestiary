@@ -18,7 +18,10 @@ observation_bp = Blueprint("observation", __name__)
 
 @observation_bp.route("/observation")
 def observation():
-    return render_template("observation.html")
+    return render_template("observation.html",
+                           authenticated="uid" in session,
+                           user_id=session.get("uid")
+                           )
 
 
 @observation_bp.route("/user/<int:user_id>/observation", methods=["GET"])
@@ -121,7 +124,7 @@ def post_comment_api(oid):
     if success:
         return jsonify({"message": "Comment posted successfully"}), 201
     else:
-        return jsonify({"error": "Failed to post comment"}), 500
+        return jsonify({"error": "Failed to post comment. Profanity is not allowed"}), 500
 
 
 @observation_bp.route("/api/observations/latest", methods=["GET"])

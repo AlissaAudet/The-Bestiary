@@ -52,7 +52,10 @@ def user_page(uid):
 
     user = get_user_by_id(uid)
     if user:
-        return render_template("user.html", user=user, authenticated=authenticated, authorized=authorized)
+        return render_template("user.html", user=user, authenticated=authenticated, authorized=authorized,
+                               user_id=user_id,
+                               profile_uid=uid
+                               )
 
     return "User not found", 404
 

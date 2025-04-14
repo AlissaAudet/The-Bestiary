@@ -8,9 +8,9 @@ connection = get_db_connection()
 
 cursor = connection.cursor()
 
-cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+#cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
-cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
+#cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
 cursor.execute("USE glo_2005_projet;")
 
