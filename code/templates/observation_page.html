@@ -1,51 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Observation Details</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="{{ url_for('static', filename='rating.js') }}" defer></script>
   <script src="{{ url_for('static', filename='observation_page.js') }}" defer></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
-    body {
-      font-family: 'Arial', sans-serif;
-      background-color: #f5f5f5;
+    html, body {
+      height: 100%;
       margin: 0;
-      padding: 20px;
-      color: #333;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef1f5;
     }
-    .container {
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .layout-container, .container {
+      width: 100%;
       max-width: 1200px;
       margin: 0 auto;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      box-sizing: border-box;
     }
+
+    .content-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      margin: 20px;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
+    p {
+      margin: 10px 0 20px;
+    }
+
+    button {
+      padding: 12px;
+      font-size: 15px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      color: white;
+      margin-right: 10px;
+    }
+
+    .back-btn { background-color: #6c757d; }
+    .back-btn:hover { background-color: #5a6268; }
+    .author-btn { background-color: #007bff; }
+    .author-btn:hover { background-color: #0056b3; }
+    .rate-btn { background-color: #28a745; }
+    .rate-btn:hover { background-color: #218838; }
+    .submit-rating-btn { background-color: #ffc107; color: #000; }
+    .submit-rating-btn:hover { background-color: #e0a800; }
+
+    #rating-section {
+      display: none;
+      margin-top: 20px;
+    }
+
     .content-wrapper {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
     }
+
     .details-container {
       flex: 1 1 500px;
       min-width: 300px;
     }
-    .details-container h1,
-    .details-container h2 {
-      text-align: center;
-      margin: 10px 0;
-    }
-    .details-container p {
-      line-height: 1.6;
-      margin: 10px 0;
-    }
+
     .details-container img {
       max-width: 100%;
       display: block;
       margin: 20px auto;
       border-radius: 8px;
     }
+
     .details-container textarea {
       width: 100%;
       padding: 10px;
@@ -56,30 +100,7 @@
       margin-bottom: 10px;
       box-sizing: border-box;
     }
-    .details-container button {
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
-      border-radius: 4px;
-      background-color: #007BFF;
-      color: #fff;
-      cursor: pointer;
-      margin: 10px 5px 10px 0;
-      transition: background-color 0.3s ease;
-    }
-    .details-container button:hover {
-      background-color: #0056b3;
-    }
-    .details-container ul#comment-list {
-      list-style: none;
-      padding: 0;
-    }
-    .details-container ul#comment-list li {
-      background: #efefef;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 4px;
-    }
+
     .media-container {
       flex: 1 1 500px;
       min-width: 300px;
@@ -87,6 +108,7 @@
       flex-direction: column;
       gap: 20px;
     }
+
     .map-container {
       position: relative;
       width: 100%;
@@ -95,10 +117,12 @@
       overflow: hidden;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
+
     #map {
       width: 100%;
       height: 100%;
     }
+
     #spinner {
       position: absolute;
       top: 50%;
@@ -112,18 +136,22 @@
       animation: spin 1s linear infinite;
       z-index: 1000;
     }
+
     @keyframes spin {
       0% { transform: translate(-50%, -50%) rotate(0deg); }
       100% { transform: translate(-50%, -50%) rotate(360deg); }
     }
+
     .image-container {
       text-align: center;
     }
+
     .image-container img {
       max-width: 100%;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     }
+
     @media (max-width: 768px) {
       .content-wrapper {
         flex-direction: column;
@@ -132,6 +160,38 @@
   </style>
 </head>
 <body>
+  <div class="layout-container">
+    <div class="content-box">
+      <h1>Animal Observation</h1>
+      {% if observation %}
+        <h2>{{ observation.species }}</h2>
+        <p>{{ observation.description }}</p>
+        {% if observation.rating is defined and observation.rating is not none %}
+          <p><strong>Average Rating:</strong> {{ observation.rating | round(1) }} <span style="color: gold;">&#9733;</span></p>
+        {% else %}
+          <p><strong>Average Rating:</strong> Not rated yet</p>
+        {% endif %}
+      {% else %}
+        <p>No observation found.</p>
+      {% endif %}
+
+      <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
+      <button class="author-btn" onclick="window.location.href='/user/{{ observation.uid }}'">Author Page</button>
+      <button class="rate-btn" onclick="toggleRating()">Rate this observation</button>
+
+      <div id="rating-section">
+        <input type="hidden" id="observation-id" value="{{ observation.oid }}">
+        <input type="hidden" id="user-id" value="{{ observation.uid }}">
+
+        <label for="rating-slider">Your Rating: <span id="slider-value">3</span> ⭐</label>
+        <input type="range" id="rating-slider" min="0" max="5" step="1" value="3" oninput="updateSliderValue()">
+
+        <br><br>
+        <button class="submit-rating-btn" onclick="submitRating()">Submit Rating</button>
+      </div>
+    </div>
+  </div>
+
   <div class="container">
     <input type="hidden" id="logged-in-uid" value="{{ uid | default('') }}">
     <div class="content-wrapper">

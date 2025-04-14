@@ -1,17 +1,14 @@
 import pymysql.cursors
 import load_all_data
+from models.database import get_db_connection
 
 
-connection = pymysql.connect(
-    host="localhost",
-    user="root",
-    password="root",
-    autocommit=True
-)
+connection = get_db_connection()
+
 
 cursor = connection.cursor()
 
-cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+#cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
 cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
@@ -25,7 +22,7 @@ CREATE TABLE IF NOT EXISTS User (
     last_name VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL,
     age INT NOT NULL,
-    password_hash VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255) NOT NULL DEFAULT '',
     user_type ENUM('Scientist', 'Passionate') NOT NULL,
     account_creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     observation_count INT DEFAULT 0,
@@ -55,7 +52,8 @@ CREATE TABLE IF NOT EXISTS User (
     longitude DOUBLE NOT NULL CHECK (longitude BETWEEN -180 AND 180),  
     PRIMARY KEY (pid) 
 );
-    """,
+    """
+    ,
     """
     CREATE TABLE ClimateRegion (
     latitude DOUBLE NOT NULL,
@@ -66,13 +64,14 @@ CREATE TABLE IF NOT EXISTS User (
 );
 
     """,
-    """
+     """
     CREATE TABLE IF NOT EXISTS Photo (
     photo_id INT NOT NULL AUTO_INCREMENT,
     image_data MEDIUMBLOB NOT NULL,
     PRIMARY KEY(photo_id)
     );
-    """,
+    """
+    ,
     """
    CREATE TABLE IF NOT EXISTS Observation (
     oid INT NOT NULL AUTO_INCREMENT,
@@ -83,7 +82,7 @@ CREATE TABLE IF NOT EXISTS User (
     description VARCHAR(500),
     pid INT NOT NULL,
     photo_id INT NOT NULL,
-    rating INT DEFAULT NULL,  
+    rating INT DEFAULT 0,  
     PRIMARY KEY (oid),
     FOREIGN KEY (author_uid) REFERENCES User(uid),
     FOREIGN KEY (species) REFERENCES Species(latin_name),
@@ -102,9 +101,20 @@ CREATE TABLE IF NOT EXISTS User (
         FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
         FOREIGN KEY(commenter_uid) REFERENCES User(uid)
     );
+    """,
+
+    """
+    CREATE TABLE IF NOT EXISTS Note(
+        nid INT NOT NULL,
+        observation_oid INT NOT NULL,
+        user_uid INT NOT NULL,
+        rating INT CHECK (rating BETWEEN 0 AND 5),
+        PRIMARY KEY(nid),
+        FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
+        FOREIGN KEY(user_uid) REFERENCES User(uid)
+    );
     """
 ]
-
 
 for query in create_tables:
     try:
@@ -113,6 +123,111 @@ for query in create_tables:
         print(f"Error :\n{query}\nErreur: {e}")
         exit(1)
 
+triggers_sql =[ """
+    CREATE TRIGGER after_note_insert
+    AFTER INSERT ON Note
+    FOR EACH ROW
+    BEGIN
+    DECLARE avg_rating FLOAT;
+
+    SELECT AVG(N.rating)
+    INTO avg_rating
+    FROM Note N
+    WHERE N.observation_oid = NEW.observation_oid;
+
+    UPDATE Observation
+    SET rating = avg_rating
+    WHERE oid = NEW.observation_oid;
+    END
+    """
+    ,   
+    """
+    CREATE TRIGGER after_note_update
+    AFTER UPDATE ON Note
+    FOR EACH ROW
+    BEGIN
+    DECLARE avg_rating FLOAT;
+
+    SELECT AVG(N.rating)
+    INTO avg_rating
+    FROM Note N
+    WHERE N.observation_oid = NEW.observation_oid;
+
+    UPDATE Observation
+    SET rating = avg_rating
+    WHERE oid = NEW.observation_oid;
+    END
+    """
+    ,
+    """
+    CREATE TRIGGER observation_count_update_insert
+    AFTER INSERT ON Observation
+    FOR EACH ROW
+    BEGIN
+    UPDATE User
+    SET observation_count = observation_count + 1
+    WHERE uid = NEW.author_uid;
+    END;
+    """
+,
+    """
+    CREATE TRIGGER observation_count_update_delete
+    AFTER DELETE ON Observation
+    FOR EACH ROW
+    BEGIN
+    UPDATE User
+    SET observation_count = observation_count - 1
+    WHERE uid = OLD.author_uid;
+    END;
+    """
+,
+
+    """
+    CREATE TRIGGER filter_language_comment_insert BEFORE INSERT ON Comment
+    FOR EACH ROW
+    BEGIN
+    IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
+    END IF;
+    END;
+    """
+    ,
+    """
+    CREATE TRIGGER filter_language_update BEFORE UPDATE ON Comment
+    FOR EACH ROW
+    BEGIN
+    IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
+    END IF;
+    END;
+    """
+]
+for trigger in triggers_sql:
+    try:
+        cursor.execute(trigger)
+        connection.commit()
+
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
+
+index_sql = [
+    """
+    CREATE INDEX user_name ON User(first_name, last_name);
+    """
+    ,
+    """
+    CREATE INDEX observed_species ON Observation(species);
+    """
+]
+
+for index in index_sql:
+    try:
+        cursor.execute(index)
+        connection.commit()
+    except pymysql.MySQLError as e:
+        print(f"Error: {e}")
 
 print("All BD created")
 
