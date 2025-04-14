@@ -84,7 +84,6 @@ def fetch_observation_by_id(oid):
         with connection.cursor(pymysql.cursors.DictCursor) as cursor:
             sql = """
                 SELECT o.oid, o.timestamp, o.description, o.behavior, o.rating, s.name AS species_name, s.latin_name AS species, u.first_name, u.last_name, u.uid, f.image_data, p.name AS place_name, p.latitude, p.longitude
-                SELECT o.oid, o.timestamp, o.description, o.behavior, o.rating, s.name AS species_name, s.latin_name AS species, u.first_name, u.last_name, u.uid, f.image_data, p.name AS place_name, p.latitude, p.longitude
                 FROM Observation o
                 JOIN Species s ON o.species = s.latin_name
                 JOIN User u ON o.author_uid = u.uid
@@ -161,3 +160,48 @@ def fetch_filtered_observations(author=None, species=None, behavior=None, timest
         observations.append(observation)
 
     return observations
+
+
+# observation_model.py
+
+import pymysql
+from models.database import get_db_connection
+
+
+def insert_comment(user_id, observation_id, comment_text):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+        INSERT INTO Comment (text, observation_oid, commenter_uid)
+        VALUES (%s, %s, %s)
+    """
+    try:
+        cursor.execute(query, (comment_text, observation_id, user_id))
+        conn.commit()
+        return True
+    except Exception as e:
+        print(f"Error inserting comment: {e}")
+        return False
+    finally:
+        cursor.close()
+        conn.close()
+
+
+def fetch_comments_by_observation_id(observation_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    query = """
+        SELECT Comment.cid, Comment.text, User.first_name, User.last_name
+        FROM Comment
+        JOIN User ON Comment.commenter_uid = User.uid
+        WHERE Comment.observation_oid = %s
+        ORDER BY cid
+    """
+    cursor.execute(query, (observation_id,))
+    comments = cursor.fetchall()
+    cursor.close()
+    conn.close()
+
+    return comments

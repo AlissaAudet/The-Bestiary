@@ -93,11 +93,13 @@ CREATE TABLE IF NOT EXISTS User (
     """,
     """
     CREATE TABLE IF NOT EXISTS Comment (
-        cid INT NOT NULL,
+        cid INT AUTO_INCREMENT NOT NULL,
         text VARCHAR(300),
         observation_oid INT,
+        commenter_uid INT,
         PRIMARY KEY(cid),
-        FOREIGN KEY(observation_oid) REFERENCES Observation(oid)
+        FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
+        FOREIGN KEY(commenter_uid) REFERENCES User(uid)
     );
     """,
 

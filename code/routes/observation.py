@@ -1,12 +1,16 @@
-from flask import Blueprint, render_template, jsonify, request
+from flask import Blueprint, render_template, jsonify, request, session
 from datetime import datetime
+import base64
 
 from models.observation_model import (
     insert_observation,
     fetch_observations_by_user,
     fetch_observations_by_user,
     fetch_observation_by_id,
-    fetch_filtered_observations)
+    fetch_filtered_observations,
+    fetch_comments_by_observation_id,
+    insert_comment)
+
 observation_bp = Blueprint("observation", __name__)
 
 
@@ -55,14 +59,22 @@ def get_user_observations(uid):
     return jsonify(observations)
 
 
-@observation_bp.route("/observation/<int:oid>", methods=["GET"])
+@observation_bp.route("/observation/<int:oid>", methods=["GET", "POST"])
 def observation_page(oid):
     observation = fetch_observation_by_id(oid)
+    comments = fetch_comments_by_observation_id(oid)
+    userId = session.get("uid")
+    observation_image = observation['image_data']
+    image_data = base64.b64encode(observation_image).decode('utf-8')
 
     if not observation:
         return "Observation not found", 404
 
-    return render_template("observation_page.html", observation=observation)
+
+    return render_template("observation_page.html", observation=observation, comments=comments, userId=userId, image_data=image_data)
+
+
+
 
 
 @observation_bp.route("/api/observations/filter", methods=["GET"])
@@ -85,3 +97,26 @@ def filter_observations():
     print("Observations from Database:", observations)
 
     return jsonify(observations)
+
+@observation_bp.route("/api/observation/<int:oid>/comments", methods=["GET"])
+def get_comments_api(oid):
+    comments = fetch_comments_by_observation_id(oid)
+    return jsonify(comments)
+
+
+@observation_bp.route("/api/observation/<int:oid>/comment", methods=["POST"])
+def post_comment_api(oid):
+    user_id = session.get("uid")
+    if not user_id:
+        return jsonify({"error": "Not authenticated"}), 401
+
+    comment_text = request.form.get("comment_text")
+
+    if not comment_text:
+        return jsonify({"error": "Empty comment"}), 400
+
+    success = insert_comment(user_id, oid, comment_text)
+    if success:
+        return jsonify({"message": "Comment posted successfully"}), 201
+    else:
+        return jsonify({"error": "Failed to post comment"}), 500
