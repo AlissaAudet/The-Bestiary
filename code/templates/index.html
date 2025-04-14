@@ -4,198 +4,157 @@
     <meta charset="UTF-8">
     <title>The Bestiary</title>
     <script src="{{ url_for('static', filename='index.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, sans-serif;
-            background: #f7f7f7;
-            color: #333;
-        }
 
-        header.color-secondary {
-            background-color: #bc772d;
-            padding: 1.5rem 0;
-        }
+.nav-buttons {
+    margin-top: 40px;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
 
-        header .container-fluid {
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-            color: #fff;
-            padding: 0 20px;
-        }
+.nav-buttons button:nth-child(2) {
+    background-color: #17a2b8;
+}
 
-        header h1.display-4 {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
+.nav-buttons button:nth-child(2):hover {
+    background-color: #138496;
+}
 
-        header p.lead {
-            font-size: 1.25rem;
-            font-weight: 400;
-            color: white;
-            margin-bottom: 0;
-        }
+.nav-buttons button:nth-child(3) {
+    background-color: #ffc107;
+    color: #000;
+}
 
-        .banner {
-            width: 100%;
-            height: 200px;
-            overflow: hidden;
-        }
+.nav-buttons button:nth-child(3):hover {
+    background-color: #e0a800;
+}
 
-        .banner img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
 
-        .content {
-            max-width: 800px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 20px 40px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
+.carousel-container {
+  position: relative;
+  max-width: 50%;
+  margin: 40px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        .search-container {
-            margin: 20px auto;
-            width: 100%;
-            max-width: 400px;
-            position: relative;
-        }
+.carousel-slide {
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-        .search-container label {
-            display: block;
-            font-weight: bold;
-            margin-bottom: 8px;
-            text-align: center;
-        }
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
 
-        #user-search {
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
+.carousel-slide img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
 
-        #user-results {
-            list-style: none;
-            margin-top: 5px;
-            padding: 0;
-            width: 100%;
-            border: 1px solid #ccc;
-            background: #fff;
-            max-height: 200px;
-            overflow-y: auto;
-            border-radius: 5px;
-            display: none;
-        }
 
-        #user-results li {
-            padding: 10px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+.carousel-arrow {
+  background-color: rgba(0, 0, 0, 0.4);
+  color: white;
+  border: none;
+  font-size: 2rem;
+  padding: 8px 16px;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
 
-        #user-results li:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
+.carousel-arrow:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
 
-        #go-to-user {
-            margin-top: 15px;
-            padding: 10px 20px;
-            font-size: 16px;
-            border: none;
-            background-color: #007bff;
-            color: #fff;
-            border-radius: 5px;
-            cursor: pointer;
-        }
+.carousel-arrow.left {
+  position: absolute;
+  left: -50px;
+}
 
-        #go-to-user:disabled {
-            background-color: #aaa;
-            cursor: not-allowed;
-        }
+.carousel-arrow.right {
+  position: absolute;
+  right: -50px;
+}
 
-        .nav-buttons {
-            margin-top: 40px;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+.site-description {
+  max-width: 900px;
+  margin: 40px auto 20px;
+  padding: 30px;
+  background-color: #fff8f0;
+  border-left: 6px solid #bc772d;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
 
-        .nav-buttons button {
-            padding: 12px 24px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: #28a745;
-            color: #fff;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+.site-description h2 {
+  font-size: 2rem;
+  color: #bc772d;
+  margin-bottom: 15px;
+}
 
-        .nav-buttons button:hover {
-            background-color: #218838;
-        }
+.site-description p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: #444;
+}
+.carousel-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #000000;
+  margin-top: 60px;
+  margin-bottom: 20px;
+  font-weight: bold;
+}
 
-        .nav-buttons button:nth-child(2) {
-            background-color: #17a2b8;
-        }
-
-        .nav-buttons button:nth-child(2):hover {
-            background-color: #138496;
-        }
-
-        .nav-buttons button:nth-child(3) {
-            background-color: #ffc107;
-            color: #000;
-        }
-
-        .nav-buttons button:nth-child(3):hover {
-            background-color: #e0a800;
-        }
     </style>
 </head>
 <body>
-<header class="color-secondary">
-    <div class="container-fluid">
-        <h1 class="display-4 fw-bolder">The Bestiary</h1>
-        <p class="lead fw-normal mb-0">
-            Every Being Tells a Story
-        </p>
-    </div>
-</header>
+{% include 'header.html' %}
 
-<div class="banner">
-    <img src="{{ url_for('static', filename='pictures/photo_home.png') }}" alt="Banner Image">
+  <section class="site-description">
+  <h2>Welcome to The Bestiary</h2>
+  <p>
+    The Bestiary is a collaborative platform where <strong>scientists</strong> and <strong>nature enthusiasts</strong> come together to power community-driven science.
+    Whether you're an expert or a passionate observer, you can log wildlife sightings, explore Québec’s biodiversity, and contribute to a richer understanding of our natural world.
+  </p>
+</section>
+<h2 class="carousel-title">Latest Observations</h2>
+<div class="carousel-container">
+  <button class="carousel-arrow left" onclick="prevSlide()">&#10094;</button>
+  <div class="carousel-slide">
+    <img id="carousel-image" src="" alt="Observation" />
+  </div>
+  <button class="carousel-arrow right" onclick="nextSlide()">&#10095;</button>
 </div>
 
-<div class="content">
-    <div class="search-container">
-        <label for="user-search">Search user:</label>
-        <input type="text" id="user-search" placeholder="Type a name...">
-        <ul id="user-results"></ul>
-    </div>
-    <button id="go-to-user" disabled>Go to Page</button>
-    <div class="nav-buttons">
-        <button onclick="window.location.href='/login'">Login</button>
-        <button onclick="window.location.href='/signup'">Sign Up</button>
-        <button onclick="window.location.href='/observation'">Observation</button>
-    </div>
+
+<div class="nav-buttons">
+    <button class="btn" onclick="window.location.href='/observation'">Browse Wildlife Data</button>
+</div>
+<br>
+
 </div>
 </body>
 </html>

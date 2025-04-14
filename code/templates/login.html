@@ -5,18 +5,18 @@
   <title>Login</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='index.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 
   <style>
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #eef1f5;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
+    .container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
 
     #login-form {
       background: white;
@@ -27,12 +27,6 @@
       max-width: 500px;
       box-sizing: border-box;
       margin-top: 60px;
-    }
-
-    h1 {
-      text-align: center;
-      margin-bottom: 30px;
-      color: #333;
     }
 
     label {
@@ -54,7 +48,7 @@
       margin-top: 25px;
       width: 100%;
       padding: 12px;
-      background-color: #007bff;
+      background-color: var(--brown-1);
       color: white;
       border: none;
       font-size: 16px;
@@ -64,7 +58,7 @@
     }
 
     button[type="submit"]:hover {
-      background-color: #0056b3;
+      background-color: rgba(140, 63, 10, 0.35);
     }
 
     .button-group {
@@ -86,11 +80,11 @@
     }
 
     .button-group button:nth-child(1) {
-      background-color: #17a2b8;
+      background-color: var(--brown-1);
     }
 
     .button-group button:nth-child(1):hover {
-      background-color: #138496;
+      background-color: rgba(140, 63, 10, 0.35);
     }
 
     .button-group button:nth-child(2) {
@@ -126,6 +120,8 @@
 </head>
 
 <body>
+{% include 'header.html' %}
+<div class = container>
   <form id="login-form" onsubmit="login(event)">
     <h1>Login</h1>
 
@@ -142,5 +138,6 @@
       <button type="button" onclick="window.location.href='/'">Return to Home Page</button>
     </div>
   </form>
+  </div>
 </body>
 </html>

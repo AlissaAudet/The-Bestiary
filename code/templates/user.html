@@ -5,14 +5,14 @@
   <title>User Profile</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='index.js') }}" defer></script>
   <script src="{{ url_for('static', filename='user.js') }}" defer></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 
   <style>
     body {
       margin: 0;
-      padding: 40px 20px;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #eef1f5;
+
     }
 
     .layout {
@@ -20,7 +20,6 @@
       flex-wrap: wrap;
       gap: 20px;
     }
-
     .profile-container {
       background: white;
       padding: 30px;
@@ -30,6 +29,7 @@
       max-width: 400px;
       box-sizing: border-box;
       flex-shrink: 0;
+      margin-left: 20px;
     }
 
     .observations-section {
@@ -40,6 +40,8 @@
       flex: 1;
       min-width: 0;
       box-sizing: border-box;
+      margin-left: 20px;
+  margin-right: 20px;
     }
 
     .profile-container h1,
@@ -75,20 +77,14 @@
     }
 
     #add-observation-btn {
-      background-color: #28a745;
+      background-color: var(--brown-1);
     }
 
     #add-observation-btn:hover {
-      background-color: #218838;
+      background-color: rgba(140, 63, 10, 0.35);
     }
 
-    #logout-btn {
-      background-color: #dc3545;
-    }
 
-    #logout-btn:hover {
-      background-color: #c82333;
-    }
 
     .back-btn {
       margin-top: 30px;
@@ -127,9 +123,8 @@
       }
     }
   </style>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
+<script>
+   document.addEventListener("DOMContentLoaded", function () {
       try {
         const isAuthenticated = JSON.parse("{{ authenticated | tojson | safe }}");
         const isAuthorized = JSON.parse("{{ authorized | tojson | safe }}");
@@ -137,6 +132,8 @@
         const logoutBtn = document.getElementById("logout-btn");
         const addObservationContainer = document.getElementById("add-observation-container");
         const addObservationBtn = document.getElementById("add-observation-btn");
+        const followBtn = document.getElementById("follow-btn");
+        const followerContainer = document.getElementById("follower-container");
 
         if (logoutBtn && !isAuthenticated) {
           logoutBtn.style.display = "none";
@@ -148,17 +145,25 @@
             addObservationBtn.style.display = "none";
           }
         }
+
+        if (followBtn && isAuthenticated && !isAuthorized) {
+          followBtn.style.display = "inline-block";
+        } else if (followBtn) {
+          followBtn.style.display = "none";
+        }
+
+        if (followerContainer && isAuthenticated) {
+          followerContainer.style.display = "block";
+        }
       } catch (error) {
         console.error("Error processing authentication state:", error);
       }
     });
   </script>
 </head>
-
 <body>
-
+{% include 'header.html' %}
   <div class="layout">
-
     <!-- LEFT: Profile -->
     <div class="profile-container">
       <h1>User Profile</h1>
@@ -169,9 +174,20 @@
       <p><strong>Observation count:</strong> {{ user.observation_count }}</p>
       <div id="add-observation-container" class="button-group">
         <button id="add-observation-btn" onclick="window.location.href='/user/{{ user.uid }}/observation'">Add Observation</button>
-        <button id="logout-btn" onclick="logout()">Logout</button>
       </div>
 
+      <button id="follow-btn" onclick="toggleFollow({{ user.uid }})" style="display: none;">Follow</button>
+
+      <div id="follower-container" style="display: none; margin-top: 20px;">
+        <h3>Followers</h3>
+        <ul id="followers-list"></ul>
+
+        <h3>Following</h3>
+        <ul id="following-list"></ul>
+      </div>
+      {% if authenticated %}
+      <button class="back-btn" onclick="logout()">Logout</button>
+      {% endif %}
       <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
     </div>
 
@@ -182,8 +198,6 @@
         <p>Loading observations...</p>
       </div>
     </div>
-
   </div>
-
 </body>
 </html>

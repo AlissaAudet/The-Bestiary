@@ -8,7 +8,7 @@ connection = get_db_connection()
 
 cursor = connection.cursor()
 
-#cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
 cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
@@ -52,8 +52,7 @@ CREATE TABLE IF NOT EXISTS User (
     longitude DOUBLE NOT NULL CHECK (longitude BETWEEN -180 AND 180),  
     PRIMARY KEY (pid) 
 );
-    """
-    ,
+    """,
     """
     CREATE TABLE ClimateRegion (
     latitude DOUBLE NOT NULL,
@@ -102,6 +101,17 @@ CREATE TABLE IF NOT EXISTS User (
         FOREIGN KEY(commenter_uid) REFERENCES User(uid)
     );
     """,
+    """
+    CREATE TABLE Followers (
+    follower_uid INT NOT NULL,
+    following_uid INT NOT NULL,
+    follow_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (follower_uid, following_uid),
+    FOREIGN KEY (follower_uid) REFERENCES User(uid) ON DELETE CASCADE,
+    FOREIGN KEY (following_uid) REFERENCES User(uid) ON DELETE CASCADE
+);
+
+    """,
 
     """
     CREATE TABLE IF NOT EXISTS Note(
@@ -113,8 +123,14 @@ CREATE TABLE IF NOT EXISTS User (
         FOREIGN KEY(observation_oid) REFERENCES Observation(oid),
         FOREIGN KEY(user_uid) REFERENCES User(uid)
     );
+    """,
+    """
+    CREATE TABLE ForbiddenWords (
+    word VARCHAR(100) NOT NULL
+    );
     """
 ]
+
 
 for query in create_tables:
     try:
@@ -140,7 +156,7 @@ triggers_sql =[ """
     WHERE oid = NEW.observation_oid;
     END
     """
-    ,   
+    ,
     """
     CREATE TRIGGER after_note_update
     AFTER UPDATE ON Note
@@ -181,27 +197,61 @@ triggers_sql =[ """
     END;
     """
 ,
+"""
+               
+
+CREATE FUNCTION contains_forbidden_word(input_text TEXT)
+RETURNS BOOLEAN
+DETERMINISTIC
+BEGIN
+    DECLARE forbidden_found BOOLEAN DEFAULT FALSE;
+    DECLARE forbidden_word VARCHAR(100);
+    DECLARE done INT DEFAULT FALSE;
+    DECLARE cur CURSOR FOR SELECT word FROM ForbiddenWords;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+    OPEN cur;
+    read_loop: LOOP
+        FETCH cur INTO forbidden_word;
+        IF done THEN
+            LEAVE read_loop;
+        END IF;
+
+        IF LOCATE(LOWER(forbidden_word), LOWER(input_text)) > 0 THEN
+            SET forbidden_found = TRUE;
+            LEAVE read_loop;
+        END IF;
+    END LOOP;
+    CLOSE cur;
+
+    RETURN forbidden_found;
+END ;
+
+
+
+""",
 
     """
-    CREATE TRIGGER filter_language_comment_insert BEFORE INSERT ON Comment
-    FOR EACH ROW
-    BEGIN
-    IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
+    CREATE TRIGGER filter_language_comment_insert
+BEFORE INSERT ON Comment
+FOR EACH ROW
+BEGIN
+    IF contains_forbidden_word(NEW.text) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
     END IF;
-    END;
+END;
     """
     ,
     """
     CREATE TRIGGER filter_language_update BEFORE UPDATE ON Comment
     FOR EACH ROW
     BEGIN
-    IF LOWER(NEW.text) LIKE '%%fuck%%' THEN
-    SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
+    IF contains_forbidden_word(NEW.text) THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Profanity is not allowed in comments.';
     END IF;
-    END;
+END;
     """
 ]
 for trigger in triggers_sql:

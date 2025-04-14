@@ -7,13 +7,13 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
     <script src="{{ url_for('static', filename='user_observation.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 
     <style>
-        body {
+        .componant {
             margin: 0;
             padding: 40px 20px;
             font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #eef1f5;
             display: flex;
             justify-content: center;
             align-items: flex-start;
@@ -87,11 +87,11 @@
         }
 
         .button-row button[type="submit"] {
-            background-color: #007bff;
+            background-color: var(--brown-1);
         }
 
         .button-row button[type="submit"]:hover {
-            background-color: #0056b3;
+            background-color: rgba(140, 63, 10, 0.35);
         }
 
         .button-row button[type="button"] {
@@ -105,7 +105,7 @@
         .logout-button {
             margin-top: 20px;
             padding: 10px 20px;
-            background-color: #dc3545;
+            background-color: #6c757d;
             color: white;
             border: none;
             border-radius: 6px;
@@ -114,7 +114,7 @@
         }
 
         .logout-button:hover {
-            background-color: #c82333;
+            background-color: #5a6268;
         }
 
         .search-container {
@@ -214,6 +214,8 @@
 </head>
 
 <body>
+{% include 'header.html' %}
+<div class="componant">
 <div class="form-layout">
     <form id="obs-form">
         <h2>Register a New Observation</h2>
@@ -254,7 +256,6 @@
             <button type="button" onclick="window.location.href='/'">Return To Home Page</button>
         </div>
 
-        <button type="button" class="logout-button" onclick="logout()">Logout</button>
     </form>
 
     <div class="map-container">
@@ -267,6 +268,7 @@
             <img id="image-preview"
                  style="display: none; margin-top: 10px; max-width: 100%; border-radius: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.1);"/>
         </div>
+    </div>
     </div>
 </div>
 

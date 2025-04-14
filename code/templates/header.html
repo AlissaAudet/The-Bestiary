@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header.color-secondary {
+  position: relative;
+  background-color: #bc772d;
+  padding: 1.5rem 0;
+  color: white;
+  margin-bottom: 40px;
+}
+
+header .container-fluid {
+  width: 100%;
+  text-align: center;
+
+}
+
+header h1.display-4 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+header p.lead {
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+.top-banner-actions {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-left .btn {
+  background-color: #fff;
+  color: #bc772d;
+  border: 2px solid #fff;
+  font-weight: bold;
+  padding: 8px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+.top-left .btn:hover {
+  background-color: #bc772d;
+  color: white;
+  border-color: white;
+}
+
+.search-top-right {
+  text-align: right;
+}
+
+.search-top-right label {
+  display: block;
+  font-size: 14px;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+#user-search {
+  padding: 8px;
+  border-radius: 4px;
+  border: none;
+  width: 200px;
+}
+
+#user-results {
+  list-style: none;
+  padding: 0;
+  margin: 4px 0;
+  background: white;
+  border-radius: 4px;
+  max-height: 150px;
+  overflow-y: auto;
+  display: none;
+}
+
+#user-results li {
+  padding: 8px;
+  cursor: pointer;
+    color: #333333;
+}
+
+#user-results li:hover {
+  background: #007bff;
+  color: white;
+}
+
+</style>
+
+<header class="color-secondary">
+  <div class="top-banner-actions">
+    <div class="top-left">
+      {% if authenticated %}
+        {% if not profile_uid or profile_uid != user_id %}
+       <button class="btn" onclick="window.location.href='/user/{{ user_id }}'">My Profile</button>
+        {% endif %}
+        <button class="btn" onclick="logout()">Logout</button>
+      {% else %}
+        <button class="btn" onclick="window.location.href='/login'">Login</button>
+        <button class="btn" onclick="window.location.href='/signup'">Sign Up</button>
+      {% endif %}
+    </div>
+
+    <div class="search-top-right">
+      <label for="user-search">Search contributor</label>
+      <input type="text" id="user-search" placeholder="Type a name...">
+      <ul id="user-results"></ul>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <h1 class="display-4 fw-bolder">The Bestiary</h1>
+    <p class="lead fw-normal mb-0">Every Being Tells a Story</p>
+  </div>
+</header>
+
+</html>
