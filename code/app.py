@@ -8,6 +8,7 @@ from routes.species import species_bp
 from routes.place import place_bp
 from routes.photo import photo_bp
 from routes.follower import follower_bp
+from routes.note import note_bp
 
 app = Flask(__name__)
 app.secret_key = "5Ax83rqBr9"
@@ -16,6 +17,7 @@ app.register_blueprint(user_bp)
 app.register_blueprint(species_bp)
 app.register_blueprint(place_bp)
 app.register_blueprint(photo_bp)
+app.register_blueprint(note_bp)
 app.register_blueprint(follower_bp)
 
 @app.route("/")
