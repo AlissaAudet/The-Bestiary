@@ -28,5 +28,5 @@ def favicon():
                                'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == "__main__":
-    os.system("python code\\database\\init_database.py")
+    #os.system("python code\\database\\init_database.py")
     app.run(debug=True)

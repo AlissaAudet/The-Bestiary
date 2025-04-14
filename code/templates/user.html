@@ -166,7 +166,7 @@
       <p><strong>Email:</strong> {{ user.email }}</p>
       <p><strong>Age:</strong> {{ user.age }}</p>
       <p><strong>Type:</strong> {{ user.user_type }}</p>
-
+      <p><strong>Observation count:</strong> {{ user.observation_count }}</p>
       <div id="add-observation-container" class="button-group">
         <button id="add-observation-btn" onclick="window.location.href='/user/{{ user.uid }}/observation'">Add Observation</button>
         <button id="logout-btn" onclick="logout()">Logout</button>
