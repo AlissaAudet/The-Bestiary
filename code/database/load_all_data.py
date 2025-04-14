@@ -1,6 +1,6 @@
 import os
 
-from data import load_user_data, load_place_data, load_quebec_species, load_photo_data, load_observation_data, load_climate_data
+from data import load_user_data, load_place_data, load_quebec_species, load_photo_data, load_observation_data, load_climate_data, load_ForbiddenWords_data
 
 def main():
     print("Loading user data...")
@@ -18,6 +18,9 @@ def main():
     print("Loading photo data...")
     image_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "data/image"))
     load_photo_data.load_photos_from_directory(image_dir)
+
+    print("Load forbidden words data...")
+    load_ForbiddenWords_data.load_forbidden_words()
 
     print("Loading Observation data...")
     load_observation_data.load_observations()
