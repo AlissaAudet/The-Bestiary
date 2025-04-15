@@ -50,8 +50,8 @@ def get_species_info(latin_name):
             FROM Species
             WHERE latin_name = %s
         """
-        cursor.execute(query, (latin_name))
-        species = cursor.fetchall()
+        cursor.execute(query, (latin_name,))
+        species = cursor.fetchone()
 
         return species
 

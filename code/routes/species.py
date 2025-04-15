@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, request, render_template, session
 from models.species_model import get_species, search_species, get_species_info
 
 species_bp = Blueprint("species", __name__)
@@ -21,4 +21,9 @@ def search_species_api():
 def species_page(latin_name):
     latin_name = latin_name.replace('_', ' ')
     species = get_species_info(latin_name)
-    return render_template("species.html", latin_name=latin_name, species=species)
+    return render_template("species.html",
+                           latin_name=latin_name,
+                           species=species,
+                            authenticated = "uid" in session,
+                            user_id = session.get("uid")
+    )

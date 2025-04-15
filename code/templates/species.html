@@ -4,9 +4,9 @@
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>{{ latin_name }}</title>
-    <script src="{{ url_for('static', filename='species.js') }}" defer></script>
 
 </head>
+<body>
 {% if species %}
     <p><strong>Genus:</strong> {{ species.genus }}</p>
     <p><strong>Family:</strong> {{ species.family }}</p>
