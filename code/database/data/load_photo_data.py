@@ -15,6 +15,7 @@ def load_photos_from_directory(directory_path):
                 with open(full_path, "rb") as image_file:
                     binary_data = image_file.read()
                     cursor.execute("INSERT INTO Photo (image_data) VALUES (%s)", (binary_data,))
+                    print(f"Photo '{filename}' inserted.")
 
         connection.commit()
         print("All photos inserted successfully!")

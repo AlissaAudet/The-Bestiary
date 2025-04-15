@@ -96,3 +96,4 @@ function setupSpeciesSearch() {
         searchInput.value = "";
 })
 }
+

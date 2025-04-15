@@ -220,22 +220,10 @@ function renderUserList(users, containerId, moreText, emptyMessage) {
     const visible = users.slice(0, maxToShow);
     const hidden = users.slice(maxToShow);
 
-    function createUserLink(user) {
-        const li = document.createElement("li");
-        const link = document.createElement("a");
-        link.href = `/user/${user.uid}`;
-        link.textContent = `${user.first_name} ${user.last_name}`;
-        link.style.color = "#000000";
-        link.style.textDecoration = "none";
-        link.style.cursor = "pointer";
-        link.onmouseover = () => link.style.textDecoration = "underline";
-        link.onmouseout = () => link.style.textDecoration = "none";
-        li.appendChild(link);
-        return li;
-    }
-
     for (const user of visible) {
-        container.appendChild(createUserLink(user));
+        const li = document.createElement("li");
+        li.textContent = `${user.first_name} ${user.last_name}`;
+        container.appendChild(li);
     }
 
     if (hidden.length > 0) {
@@ -243,12 +231,13 @@ function renderUserList(users, containerId, moreText, emptyMessage) {
         moreBtn.textContent = moreText;
         moreBtn.onclick = () => {
             for (const user of hidden) {
-                container.appendChild(createUserLink(user));
+                const li = document.createElement("li");
+                li.textContent = `${user.first_name} ${user.last_name}`;
+                container.appendChild(li);
             }
             moreBtn.remove();
         };
         container.appendChild(moreBtn);
     }
-
 }
 

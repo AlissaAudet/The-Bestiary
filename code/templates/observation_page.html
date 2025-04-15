@@ -5,22 +5,27 @@
   <title>Observation Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="{{ url_for('static', filename='rating.js') }}" defer></script>
-  <script src="{{ url_for('static', filename='specific_observation.js') }}" defer></script>
-  <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='observation_page.js') }}" defer></script>
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-  <script src="{{ url_for('static', filename='index.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style/app.css') }}">
-
   <style>
     html, body {
       height: 100%;
       margin: 0;
       padding: 0;
       font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #eef1f5;
     }
+
 
     .layout-container{
       width: 100%;
+      max-width: 1200px;
+      box-sizing: border-box;
+      display: flex;
+      justify-content: normal;
+      align-items: stretch;
+      flex-direction: column;
+      margin: 5vh;
     }
 
     .container {
@@ -47,6 +52,11 @@
       margin: 20px auto;
     }
 
+    h1, h2, h3 {
+      margin-top: 0;
+      color: #333;
+    }
+
     p {
       margin: 10px 0 20px;
     }
@@ -62,14 +72,14 @@
       margin-right: 10px;
     }
 
-    .post_comment_btn { background-color: #cd8755; color: #000; }
-    .post_comment_btn:hover { background-color: rgba(140, 63, 10, 0.35); }
-    .back_btn { background-color: var(--light-grey); }
-    .back_btn:hover { background-color: var(--dark-grey); }
-    .author_btn { background-color: var(--light-grey); }
-    .author_btn:hover { background-color:var(--dark-grey); }
-    .rate-btn { background-color: #cd8755; }
-    .rate-btn:hover { background-color: rgba(140, 63, 10, 0.35); }
+    .post_comment_btn { background-color: #ffc107; color: #000; }
+    .post_comment_btn:hover { background-color: #e0a800; }
+    .back_btn { background-color: #28a745; }
+    .back_btn:hover { background-color: #218838; }
+    .author_btn { background-color: #28a745; }
+    .author_btn:hover { background-color: #218838; }
+    .rate-btn { background-color: #28a745; }
+    .rate-btn:hover { background-color: #218838; }
     .submit-rating-btn { background-color: #ffc107; color: #000; }
     .submit-rating-btn:hover { background-color: #e0a800; }
 
@@ -166,7 +176,7 @@
   </style>
 </head>
 <body>
-{% include 'componant/header.html' %}
+{% include 'header.html' %}
   <div class="layout-container">
   <div class="container">
     <input type="hidden" id="logged-in-uid" value="{{ uid | default('') }}">
@@ -209,15 +219,15 @@
         <br><br>
         <h3>Comments</h3>
         <br>
-        <ul id="comment-list">
-          {% if comments %}
+        {% if comments %}
+          <ul id="comment-list">
             {% for comment in comments %}
               <li>{{ comment.first_name }} {{ comment.last_name }}: {{ comment.text }}</li>
             {% endfor %}
-          {% else %}
-            <li style="font-style: italic; color: #777;">No comments yet.</li>
-          {% endif %}
-        </ul>
+          </ul>
+        {% else %}
+          <p>No comments yet.</p>
+        {% endif %}
         <br>
         <button class="back_btn" onclick="window.location.href='/'">Back to Home</button>
         <button class="author_btn" onclick="window.location.href='/user/{{ observation.uid }}'">Author Page</button>

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
   <script src="{{ url_for('static', filename='index.js') }}" defer></script>
- <link rel="stylesheet" href="{{ url_for('static', filename='style/app.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
 
   <style>
     .container {
@@ -120,7 +120,7 @@
 </head>
 
 <body>
-{% include 'componant/header.html' %}
+{% include 'header.html' %}
 <div class = container>
   <form id="login-form" onsubmit="login(event)">
     <h1>Login</h1>
