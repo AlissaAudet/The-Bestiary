@@ -3,7 +3,6 @@ document.getElementById("post_comment_btn").addEventListener("click", async func
     const commentText = commentBox.value.trim();
     const observationId = window.location.pathname.split("/")[2];
 
-
     if (commentText.length > 0) {
         try {
             const response = await fetch(`/api/observation/${observationId}/comment`, {

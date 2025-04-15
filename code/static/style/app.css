@@ -1,10 +1,13 @@
 :root {
   --brown-1: #cd8755;
+    --backgroud-1 : rgba(140, 63, 10, 0.35);
+    --light-grey :  #6c757d;
+    --dark-grey : #5a6268;
 }
 
 body {
             font-family: Arial, sans-serif;
-            background: rgba(140, 63, 10, 0.35);
+            background: var(--backgroud-1);
             color: #333;
         }
 .btn {
