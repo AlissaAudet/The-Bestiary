@@ -20,10 +20,13 @@ def main():
     load_photo_data.load_photos_from_directory(image_dir)
 
     print("Load forbidden words data...")
-    load_ForbiddenWords_data.load_forbidden_words()
+    words_path = os.path.join(os.path.dirname(__file__), "data/txt", "english_bad_words.txt")
+    load_ForbiddenWords_data.load_forbidden_words(words_path)
 
     print("Loading Observation data...")
     load_observation_data.load_observations()
+    print("Finished loading base observations.")
+    load_observation_data.load_random_observations(100)
 
     print("Loading Follower data...")
     load_follower_data.load_followers()

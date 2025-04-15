@@ -1,9 +1,59 @@
 import os
 import sys
-from datetime import datetime
+import random
+from datetime import datetime, timedelta
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../")))
 from models.database import get_db_connection
+
+
+def generate_random_observation(uid_range=(1, 17), pid_range=(1, 10), photo_id=7):
+    species_list = [
+        "Odocoileus virginianus","Marmota monax"
+    ]
+    behaviors = ["Sleeping", "Eating", "Hunting", "Moving", "Interacting"]
+    descriptions = [
+        "Observed near a river", "Eating berries", "Sleeping in a tree",
+        "Interacting with others", "Crossing the path", "Running away",
+        "Resting quietly", "Displaying dominance"
+    ]
+
+    timestamp = datetime.now() - timedelta(days=random.randint(0, 1000))
+    formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S")
+
+    return (
+        formatted_time,
+        random.randint(*uid_range),
+        random.choice(species_list),
+        random.choice(behaviors),
+        random.choice(descriptions),
+        random.randint(*pid_range),
+        photo_id
+    )
+
+def load_random_observations(n):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    observations = [generate_random_observation() for _ in range(n)]
+
+    query = """
+        INSERT INTO Observation (
+            timestamp, author_uid, species, behavior, description, pid, photo_id
+        )
+        VALUES (%s, %s, %s, %s, %s, %s, %s)
+    """
+
+    try:
+        cursor.executemany(query, observations)
+        connection.commit()
+        print(f"{n} random observations inserted successfully.")
+    except Exception as e:
+        print(f"Error inserting random observations: {e}")
+        connection.rollback()
+    finally:
+        cursor.close()
+        connection.close()
 
 def load_observations():
     connection = get_db_connection()
@@ -37,3 +87,4 @@ def load_observations():
 
 if __name__ == "__main__":
     load_observations()
+    load_random_observations(100)
