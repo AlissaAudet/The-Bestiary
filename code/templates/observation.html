@@ -7,7 +7,7 @@
   <script src="{{ url_for('static', filename='specific_observation.js') }}" defer></script>
   <script src="{{ url_for('static', filename='index.js') }}" defer></script>
   <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+ <link rel="stylesheet" href="{{ url_for('static', filename='style/app.css') }}">
   <style>
 html, body {
   height: 100%;
@@ -185,7 +185,7 @@ html, body {
   </style>
 </head>
 <body>
-{% include 'header.html' %}
+{% include 'componant/header.html' %}
 <div class="container">
   <div class="layout-container">
     <!-- Left: Form -->

@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
     <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
     <script src="{{ url_for('static', filename='add_observation.js') }}" defer></script>
-    <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+   <link rel="stylesheet" href="{{ url_for('static', filename='style/app.css') }}">
     <script src="{{ url_for('static', filename='index.js') }}" defer></script>
 
     <style>
@@ -215,7 +215,7 @@
 </head>
 
 <body>
-{% include 'header.html' %}
+{% include 'componant/header.html' %}
 <div class="componant">
 <div class="form-layout">
     <form id="obs-form">

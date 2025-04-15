@@ -7,7 +7,7 @@
   <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
   <script src="{{ url_for('static', filename='index.js') }}" defer></script>
   <script src="{{ url_for('static', filename='user.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+ <link rel="stylesheet" href="{{ url_for('static', filename='style/app.css') }}">
 
   <style>
     body {
@@ -162,7 +162,7 @@
   </script>
 </head>
 <body>
-{% include 'header.html' %}
+{% include 'componant/header.html' %}
   <div class="layout">
     <!-- LEFT: Profile -->
     <div class="profile-container">
