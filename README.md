@@ -1,7 +1,4 @@
 # GLO-2005 - Projet
-## Nom et IDUL
-
-    Alissa Audet | ALAUD52
 
 ## Seter MySql
 Pour seter son mot de passe à "root", faite cette commande dans le terminal MySql de root

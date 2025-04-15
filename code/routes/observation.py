@@ -20,7 +20,7 @@ observation_bp = Blueprint("observation", __name__)
 def observation():
     return render_template("observation.html",
                            authenticated="uid" in session,
-                           user_id=session.get("uid")
+                           user_id=session.get("uid"),
                            )
 
 
@@ -28,7 +28,10 @@ def observation():
 def get_user_observation_page(user_id):
     observations = fetch_observations_by_user(user_id)
 
-    return render_template("user_observation.html", user_id=user_id, observations=observations)
+    return render_template("add_observation.html",
+                           user_id=user_id,
+                           observations=observations,
+                           authenticated="uid" in session)
 
 
 @observation_bp.route("/user/<int:user_id>/observation", methods=["POST"])
@@ -76,11 +79,12 @@ def observation_page(oid):
         return "Observation not found", 404
 
 
-    return render_template("observation_page.html", observation=observation, comments=comments, userId=userId, image_data=image_data)
-
-
-
-
+    return render_template("specific_observation.html",
+                           observation=observation,
+                           comments=comments,
+                           userId=userId,
+                           image_data=image_data,
+                           authenticated="uid" in session)
 
 @observation_bp.route("/api/observations/filter", methods=["GET"])
 def filter_observations():
