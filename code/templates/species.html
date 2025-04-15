@@ -1,22 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>{{ latin_name }}</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ latin_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style/app.css') }}">
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--backgroud-1, #f7f7f7);
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding: 40px 20px;
+      box-sizing: border-box;
+    }
+    .layout-container {
+      background: white;
+      padding: 40px 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+      max-width: 800px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .species-details {
+      font-size: 16px;
+      color: #333;
+      line-height: 1.6;
+    }
+    .species-details p {
+      margin: 10px 0;
+    }
+    .species-details p strong {
+      font-weight: bold;
+      color: #555;
+    }
+  </style>
 </head>
 <body>
-{% if species %}
-    <p><strong>Genus:</strong> {{ species.genus }}</p>
-    <p><strong>Family:</strong> {{ species.family }}</p>
-    <p><strong>Order:</strong> {{ species.order_name }}</p>
-    <p><strong>Class:</strong> {{ species.class_name }}</p>
-    <p><strong>Phylum:</strong> {{ species.phylum }}</p>
-    <p><strong>Kingdom:</strong> {{ species.kingdom }}</p>
-{% else %}
-    <p>Species not found.</p>
-{% endif %}
-
+  {% include 'componant/header.html' %}
+  <div class="container">
+    <div class="layout-container">
+      {% if species %}
+        <h2>{{ species.name }} - {{ latin_name }}</h2>
+        <div class="species-details">
+          <p><strong>Phylum:</strong> {{ species.phylum }}</p>
+          <p><strong>Kingdom:</strong> {{ species.kingdom }}</p>
+        </div>
+      {% else %}
+        <h2>Species not found.</h2>
+      {% endif %}
+    </div>
+  </div>
 </body>
 </html>
