@@ -12,7 +12,9 @@ from models.observation_model import (
     insert_comment,
     fetch_latest_observations
 )
-
+from models.note_model import (
+    get_user_rating_for_observation
+)
 observation_bp = Blueprint("observation", __name__)
 
 
@@ -74,6 +76,9 @@ def observation_page(oid):
     userId = session.get("uid")
     observation_image = observation['image_data']
     image_data = base64.b64encode(observation_image).decode('utf-8')
+    user_rating = None
+    if userId:
+        user_rating = get_user_rating_for_observation(userId, oid)
 
     if not observation:
         return "Observation not found", 404
@@ -85,7 +90,8 @@ def observation_page(oid):
                            userId=userId,
                            image_data=image_data,
                            authenticated="uid" in session,
-                           user_id=session.get("uid"))
+                           user_id=session.get("uid"),
+                           user_rating=user_rating)
 
 @observation_bp.route("/api/observations/filter", methods=["GET"])
 def filter_observations():

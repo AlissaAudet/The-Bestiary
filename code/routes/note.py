@@ -16,7 +16,7 @@ def add_observation_rating(oid):
     rating = data.get("note")
 
     if not all([nid, observation_oid, user_uid, rating]):
-        return jsonify({"error": "Missing required fields"}), 400
+        return jsonify({"error": "Note need to be between 1 and 5"}), 400
 
     noteInsert = insert_or_update_note(nid, observation_oid, user_uid, rating)
 

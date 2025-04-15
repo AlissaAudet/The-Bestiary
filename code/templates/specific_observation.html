@@ -58,7 +58,7 @@
       border-radius: 6px;
       cursor: pointer;
       transition: background-color 0.2s ease;
-      color: white;
+      color: #000000;
       margin-right: 10px;
     }
 
@@ -173,7 +173,10 @@
     <div class="content-wrapper">
       <div class="details-container">
         <h1>Animal Observation by {{ observation.first_name }} {{ observation.last_name }}</h1>
-        <h2>{{ observation.species }} ({{ observation.species_name }})</h2>
+        <h2>
+        {{ observation.species_name }}
+        (<a href="/species/{{ observation.species | replace(' ', '')}}">{{ observation.species }}</a>)
+        </h2>
         <p><strong>Description:</strong> {{ observation.description }}</p>
         <p><strong>Behavior:</strong> {{ observation.behavior }}</p>
         <p><strong>Place name:</strong> {{ observation.place_name }}</p>
@@ -186,21 +189,18 @@
           <p><strong>Average Rating:</strong> Not rated yet</p>
         {% endif %}
 
-        <div class="content-box">
-
-        <button class="rate-btn" onclick="toggleRating()">Rate this observation</button>
-
+        {% if authenticated %}
+          <button class="rate-btn" onclick="toggleRating()">Rate this observation</button>
           <div id="rating-section">
             <input type="hidden" id="observation-id" value="{{ observation.oid }}">
             <input type="hidden" id="user-id" value="{{ observation.uid }}">
-
-            <label for="rating-slider">Your Rating: <span id="slider-value">3</span> ⭐</label>
-            <input type="range" id="rating-slider" min="0" max="5" step="1" value="3" oninput="updateSliderValue()">
-
+            <label for="rating-slider">Your Rating: <span id="slider-value">{{ user_rating or 3 }}</span> ⭐</label>
+            <input type="range" id="rating-slider" min="1" max="5" step="1" value="3" oninput="updateSliderValue()">
             <br><br>
             <button class="submit-rating-btn" onclick="submitRating()">Submit Rating</button>
-         </div>
         </div>
+      {% endif %}
+
 
 
         <h3>Leave a Comment</h3>

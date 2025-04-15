@@ -35,3 +35,21 @@ def insert_or_update_note(nid, observation_oid, user_uid, rating):
     finally:
         cursor.close()
         connection.close()
+
+def get_user_rating_for_observation(user_id, observation_id):
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    try:
+        query = """
+            SELECT rating
+            FROM Note
+            WHERE user_uid = %s AND observation_oid = %s
+            LIMIT 1
+        """
+        cursor.execute(query, (user_id, observation_id))
+        result = cursor.fetchone()
+        return result['rating'] if result else None
+    finally:
+        cursor.close()
+        connection.close()
