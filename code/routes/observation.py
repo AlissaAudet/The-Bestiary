@@ -140,7 +140,7 @@ def post_comment_api(oid):
 
 @observation_bp.route("/api/observations/latest", methods=["GET"])
 def get_latest_observations():
-    latest = fetch_latest_observations(limit=5)
+    latest = fetch_latest_observations()
 
     for obs in latest:
         if obs["image_data"]:

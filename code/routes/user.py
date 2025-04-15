@@ -52,8 +52,8 @@ def user_page(uid):
 
     user = get_user_by_id(uid)
     if user:
-        return render_template("user.html", user=user, authenticated=authenticated, authorized=authorized,
-                               user_id=user_id,
+        return render_template("user.html", user=user, authenticated="uid" in session, authorized=authorized,
+                               user_id=session.get("uid"),
                                profile_uid=uid
                                )
 
@@ -84,7 +84,11 @@ def register_user():
     user_type = data.get("user_type")
 
     if not first_name or not last_name or not email or not password:
-        return jsonify({"error": "Missing required fields"}), 400
+        return jsonify({"error": "Missing required fields"}), 409
+
+    existing_user = get_user_by_email(email)
+    if existing_user:
+        return jsonify({"error": "An account with this email already exists."}), 401
 
     try:
         insert_user(first_name, last_name, email, age, password, user_type)

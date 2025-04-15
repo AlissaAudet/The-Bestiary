@@ -13,6 +13,7 @@ async function fetchFilteredObservations() {
     const place_name = document.getElementById("place_name").value;
 
     const resultsContainer = document.getElementById("search-results");
+
     const queryParams = new URLSearchParams({
         author: author || "",
         species: species || "",
@@ -27,7 +28,7 @@ async function fetchFilteredObservations() {
 
         resultsContainer.innerHTML = "";
 
-        const maxToShow = 10;
+        const maxToShow = 2;
         const visible = observations.slice(0, maxToShow);
         const hidden = observations.slice(maxToShow);
 
