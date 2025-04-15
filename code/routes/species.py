@@ -17,7 +17,7 @@ def search_species_api():
     species = search_species(query)
     return jsonify(species)
 
-@observation_bp.route("/species/<latin_name>")
+@species_bp.route("/species/<latin_name>")
 def species_page(latin_name):
     latin_name = latin_name.replace('_', ' ')
     species = get_species_info(latin_name)
