@@ -11,9 +11,9 @@ connection = get_db_connection()
 
 cursor = connection.cursor()
 
-#cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
+cursor.execute("DROP DATABASE IF EXISTS glo_2005_projet;")
 
-#cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
+cursor.execute("CREATE DATABASE IF NOT EXISTS glo_2005_projet;")
 
 cursor.execute("USE glo_2005_projet;")
 
@@ -33,7 +33,7 @@ execute_queries("INDEX", create_indexs)
 
 print("All BD created")
 
-#load_all_data.main()
+load_all_data.main()
 
 print("All data created")
 
