@@ -12,7 +12,7 @@ async function fetchFilteredObservations() {
     const timestamp = document.getElementById("timestamp").value;
     const place_name = document.getElementById("place_name").value;
 
-    const resultsContainer = document.getElementById("search-results")
+    const resultsContainer = document.getElementById("search-results");
     const queryParams = new URLSearchParams({
         author: author || "",
         species: species || "",
@@ -27,7 +27,11 @@ async function fetchFilteredObservations() {
 
         resultsContainer.innerHTML = "";
 
-        observations.forEach(obs => {
+        const maxToShow = 10;
+        const visible = observations.slice(0, maxToShow);
+        const hidden = observations.slice(maxToShow);
+
+        visible.forEach(obs => {
             const li = document.createElement("li");
             li.textContent = `${obs.species} - ${obs.author} - ${obs.behavior}`;
             li.classList.add("dropdown-item");
@@ -37,14 +41,34 @@ async function fetchFilteredObservations() {
             resultsContainer.appendChild(li);
         });
 
-        const searchResults = document.getElementById("search-results");
-        searchResults.offsetHeight;
+        if (hidden.length > 0) {
+            const loadMoreBtn = document.createElement("button");
+            loadMoreBtn.textContent = "Load more";
+            loadMoreBtn.style.border = "none";
+
+            loadMoreBtn.addEventListener("click", () => {
+                hidden.forEach(obs => {
+                    const li = document.createElement("li");
+                    li.textContent = `${obs.species} - ${obs.author} - ${obs.behavior}`;
+                    li.classList.add("dropdown-item");
+                    li.addEventListener("click", function () {
+                        window.location.href = `/observation/${obs.oid}`;
+                    });
+                    resultsContainer.appendChild(li);
+                });
+                loadMoreBtn.remove();
+            });
+
+            resultsContainer.appendChild(loadMoreBtn);
+        }
+
         resultsContainer.style.setProperty("display", observations.length ? "block" : "none", "important");
 
     } catch (error) {
         console.error("Error fetching filtered observations:", error);
     }
 }
+
 function setupSpeciesSearch() {
     const searchInput = document.getElementById("species-search");
     const resultsDropdown = document.getElementById("species-results");

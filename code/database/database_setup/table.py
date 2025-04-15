@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS User (
     user_type ENUM('Scientist', 'Passionate') NOT NULL,
     account_creation_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     observation_count INT DEFAULT 0,
-    PRIMARY KEY (uid)
+    PRIMARY KEY (uid),
+    UNIQUE(email)
 );
 
     """,
