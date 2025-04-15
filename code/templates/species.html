@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ latin_name }}</title>
+    <script src="{{ url_for('static', filename='species.js') }}" defer></script>
+
+</head>
+{% if species %}
+    <p><strong>Genus:</strong> {{ species.genus }}</p>
+    <p><strong>Family:</strong> {{ species.family }}</p>
+    <p><strong>Order:</strong> {{ species.order_name }}</p>
+    <p><strong>Class:</strong> {{ species.class_name }}</p>
+    <p><strong>Phylum:</strong> {{ species.phylum }}</p>
+    <p><strong>Kingdom:</strong> {{ species.kingdom }}</p>
+{% else %}
+    <p>Species not found.</p>
+{% endif %}
+
+</body>
+</html>

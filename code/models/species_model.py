@@ -39,3 +39,26 @@ def search_species(query):
     cursor.close()
     connection.close()
     return species
+
+def get_species_info(latin_name):
+    connection = get_db_connection()
+    cursor = connection.cursor(pymysql.cursors.DictCursor)
+
+    try:
+        query = """
+            SELECT genus, family, order_name, class_name, phylum, kingdom
+            FROM Species
+            WHERE latin_name = %s
+        """
+        cursor.execute(query, (latin_name))
+        species = cursor.fetchall()
+
+        return species
+
+    except pymysql.MySQLError as e:
+        print(f"Database error in get_species_info(): {e}")
+        return []
+
+    finally:
+        cursor.close()
+        connection.close()

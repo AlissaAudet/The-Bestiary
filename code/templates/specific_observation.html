@@ -175,7 +175,7 @@
         <h1>Animal Observation by {{ observation.first_name }} {{ observation.last_name }}</h1>
         <h2>
         {{ observation.species_name }}
-        (<a href="/species/{{ observation.species | replace(' ', '')}}">{{ observation.species }}</a>)
+        (<a href="/species/{{ observation.species | replace(' ', '_')}}">{{ observation.species }}</a>)
         </h2>
         <p><strong>Description:</strong> {{ observation.description }}</p>
         <p><strong>Behavior:</strong> {{ observation.behavior }}</p>
