@@ -46,7 +46,7 @@ def get_species_info(latin_name):
 
     try:
         query = """
-            SELECT genus, family, order_name, class_name, phylum, kingdom
+            SELECT genus, name, family, order_name, class_name, phylum, kingdom
             FROM Species
             WHERE latin_name = %s
         """
