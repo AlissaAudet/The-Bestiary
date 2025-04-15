@@ -7,7 +7,8 @@ fetchFilteredObservations();
 async function fetchFilteredObservations() {
     const author = document.getElementById("author-search").value;
     const species = document.getElementById("species").value;
-    const behavior = document.getElementById("behavior").value;
+    const behaviorInput = document.getElementById("behavior").value;
+    const behavior = (behaviorInput === "None") ? "" : behaviorInput;
     const timestamp = document.getElementById("timestamp").value;
     const place_name = document.getElementById("place_name").value;
 

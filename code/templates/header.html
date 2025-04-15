@@ -61,16 +61,32 @@ header p.lead {
   border-color: white;
 }
 
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .search-top-right {
-  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
 }
 
 .search-top-right label {
   display: block;
-  font-size: 14px;
+  font-size: 15px;
   color: #fff;
   margin-bottom: 4px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: bold;
 }
+
+.search-box {
+  position: relative;
+}
+
 
 #user-search {
   padding: 8px;
@@ -80,14 +96,17 @@ header p.lead {
 }
 
 #user-results {
-  list-style: none;
-  padding: 0;
-  margin: 4px 0;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
   background: white;
   border-radius: 4px;
   max-height: 150px;
   overflow-y: auto;
   display: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 #user-results li {
@@ -112,15 +131,17 @@ header p.lead {
         {% endif %}
         <button class="btn" onclick="logout()">Logout</button>
       {% else %}
-        <button class="btn" onclick="window.location.href='/login'">Login</button>
-        <button class="btn" onclick="window.location.href='/signup'">Sign Up</button>
+        <button class="btn" id="login-button" onclick="window.location.href='/login'">Login</button>
+        <button class="btn" id="signup-button" onclick="window.location.href='/signup'">Sign Up</button>
       {% endif %}
     </div>
 
     <div class="search-top-right">
-      <label for="user-search">Search contributor</label>
-      <input type="text" id="user-search" placeholder="Type a name...">
-      <ul id="user-results"></ul>
+      <div class="search-box">
+        <label for="user-search">Search contributor</label>
+        <input type="text" id="user-search" placeholder="Type a name...">
+        <ul id="user-results"></ul>
+      </div>
     </div>
   </div>
 
@@ -129,5 +150,18 @@ header p.lead {
     <p class="lead fw-normal mb-0">Every Being Tells a Story</p>
   </div>
 </header>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const pageTitle = document.title.trim();
+    const loginButton = document.getElementById("login-button");
+    const signupButton = document.getElementById("signup-button");
 
+    if (pageTitle === "Login") {
+      if (loginButton) loginButton.disabled = true;
+    }
+    if (pageTitle === "Sign Up") {
+      if (signupButton) signupButton.disabled = true;
+    }
+  });
+</script>
 </html>

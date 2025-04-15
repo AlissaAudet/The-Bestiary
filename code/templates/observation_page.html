@@ -1,15 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Observation Details</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="{{ url_for('static', filename='rating.js') }}" defer></script>
-  <script src="{{ url_for('static', filename='index.js') }}" defer></script>
-  <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
   <script src="{{ url_for('static', filename='observation_page.js') }}" defer></script>
-  <link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
   <style>
     html, body {
@@ -20,29 +16,40 @@
       background-color: #eef1f5;
     }
 
-    body {
-      font-family: 'Arial', sans-serif;
-      margin: 0;
-      padding: 20px;
+
+    .layout-container{
+      width: 100%;
+      max-width: 1200px;
+      box-sizing: border-box;
       display: flex;
-      justify-content: center;
+      justify-content: normal;
       align-items: stretch;
       flex-direction: column;
+      margin: 5vh;
     }
 
-    .layout-container, .container {
+    .container {
       width: 100%;
       max-width: 1200px;
       margin: 0 auto;
       box-sizing: border-box;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
     .content-box {
       background: white;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-      margin: 20px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      width: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin: 20px auto;
     }
 
     h1, h2, h3 {
@@ -65,10 +72,12 @@
       margin-right: 10px;
     }
 
-    .back-btn { background-color: #6c757d; }
-    .back-btn:hover { background-color: #5a6268; }
-    .author-btn { background-color: #007bff; }
-    .author-btn:hover { background-color: #0056b3; }
+    .post_comment_btn { background-color: #ffc107; color: #000; }
+    .post_comment_btn:hover { background-color: #e0a800; }
+    .back_btn { background-color: #28a745; }
+    .back_btn:hover { background-color: #218838; }
+    .author_btn { background-color: #28a745; }
+    .author_btn:hover { background-color: #218838; }
     .rate-btn { background-color: #28a745; }
     .rate-btn:hover { background-color: #218838; }
     .submit-rating-btn { background-color: #ffc107; color: #000; }
@@ -84,6 +93,7 @@
       flex-wrap: wrap;
       gap: 20px;
     }
+
     .details-container {
       flex: 1 1 500px;
       min-width: 300px;
@@ -106,30 +116,7 @@
       margin-bottom: 10px;
       box-sizing: border-box;
     }
-    .details-container button {
-      padding: 10px 20px;
-      font-size: 1em;
-      border: none;
-      border-radius: 4px;
-      background-color: #cd8755;
-      color: #fff;
-      cursor: pointer;
-      margin: 10px 5px 10px 0;
-      transition: background-color 0.3s ease;
-    }
-    .details-container button:hover {
-      background-color: rgba(140, 63, 10, 0.35);
-    }
-    .details-container ul#comment-list {
-      list-style: none;
-      padding: 0;
-    }
-    .details-container ul#comment-list li {
-      background: #efefef;
-      padding: 10px;
-      margin: 5px 0;
-      border-radius: 4px;
-    }
+
     .media-container {
       flex: 1 1 500px;
       min-width: 300px;
@@ -191,37 +178,6 @@
 <body>
 {% include 'header.html' %}
   <div class="layout-container">
-    <div class="content-box">
-      <h1>Animal Observation</h1>
-      {% if observation %}
-        <h2>{{ observation.species }}</h2>
-        <p>{{ observation.description }}</p>
-        {% if observation.rating is defined and observation.rating is not none %}
-          <p><strong>Average Rating:</strong> {{ observation.rating | round(1) }} <span style="color: gold;">&#9733;</span></p>
-        {% else %}
-          <p><strong>Average Rating:</strong> Not rated yet</p>
-        {% endif %}
-      {% else %}
-        <p>No observation found.</p>
-      {% endif %}
-
-      <button class="back-btn" onclick="window.location.href='/'">Back to Home</button>
-      <button class="author-btn" onclick="window.location.href='/user/{{ observation.uid }}'">Author Page</button>
-      <button class="rate-btn" onclick="toggleRating()">Rate this observation</button>
-
-      <div id="rating-section">
-        <input type="hidden" id="observation-id" value="{{ observation.oid }}">
-        <input type="hidden" id="user-id" value="{{ observation.uid }}">
-
-        <label for="rating-slider">Your Rating: <span id="slider-value">3</span> ⭐</label>
-        <input type="range" id="rating-slider" min="0" max="5" step="1" value="3" oninput="updateSliderValue()">
-
-        <br><br>
-        <button class="submit-rating-btn" onclick="submitRating()">Submit Rating</button>
-      </div>
-    </div>
-  </div>
-
   <div class="container">
     <input type="hidden" id="logged-in-uid" value="{{ uid | default('') }}">
     <div class="content-wrapper">
@@ -234,18 +190,47 @@
         <p><strong>Coordinates:</strong> {{ observation.latitude }}, {{ observation.longitude }}</p>
         <p><strong>Climate:</strong> {{ observation.climate }}</p>
         <p><strong>Timestamp:</strong> {{ observation.timestamp }}</p>
+        {% if observation.rating is defined and observation.rating is not none %}
+          <p><strong>Average Rating:</strong> {{ observation.rating | round(1) }} <span style="color: gold;">&#9733;</span></p>
+        {% else %}
+          <p><strong>Average Rating:</strong> Not rated yet</p>
+        {% endif %}
+
+        <div class="content-box">
+
+        <button class="rate-btn" onclick="toggleRating()">Rate this observation</button>
+
+          <div id="rating-section">
+            <input type="hidden" id="observation-id" value="{{ observation.oid }}">
+            <input type="hidden" id="user-id" value="{{ observation.uid }}">
+
+            <label for="rating-slider">Your Rating: <span id="slider-value">3</span> ⭐</label>
+            <input type="range" id="rating-slider" min="0" max="5" step="1" value="3" oninput="updateSliderValue()">
+
+            <br><br>
+            <button class="submit-rating-btn" onclick="submitRating()">Submit Rating</button>
+         </div>
+        </div>
+
 
         <h3>Leave a Comment</h3>
         <textarea id="comment_box" rows="4" cols="50" placeholder="Write your comment here..."></textarea>
-        <button id="post_comment_btn">Post comment</button>
+        <button id="post_comment_btn" class="post_comment_btn">Post comment</button>
+        <br><br>
         <h3>Comments</h3>
-        <ul id="comment-list">
-          {% for comment in comments %}
-            <li>{{ comment.first_name }} {{ comment.last_name }}: {{ comment.text }}</li>
-          {% endfor %}
-        </ul>
-        <button onclick="window.location.href='/'">Back to Home</button>
-        <button onclick="window.location.href='/user/{{ observation.uid }}'">Author Page</button>
+        <br>
+        {% if comments %}
+          <ul id="comment-list">
+            {% for comment in comments %}
+              <li>{{ comment.first_name }} {{ comment.last_name }}: {{ comment.text }}</li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>No comments yet.</p>
+        {% endif %}
+        <br>
+        <button class="back_btn" onclick="window.location.href='/'">Back to Home</button>
+        <button class="author_btn" onclick="window.location.href='/user/{{ observation.uid }}'">Author Page</button>
       </div>
 
       <div class="media-container">
@@ -259,6 +244,7 @@
         </div>
       </div>
     </div>
+  </div>
   </div>
 
   <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
