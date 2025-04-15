@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <title>Search Observations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="{{ url_for('static', filename='specific_observation.js') }}" defer></script>
+  <script src="{{ url_for('static', filename='observation.js') }}" defer></script>
   <script src="{{ url_for('static', filename='index.js') }}" defer></script>
   <script src="{{ url_for('static', filename='authentification.js') }}" defer></script>
  <link rel="stylesheet" href="{{ url_for('static', filename='style/app.css') }}">
@@ -154,19 +154,6 @@ html, body {
       list-style: none;
       padding: 0;
       margin: 0;
-    }
-
-    #search-results .dropdown-item {
-      background-color: #f2f2f2;
-      margin-bottom: 12px;
-      padding: 15px;
-      border-radius: 6px;
-      transition: background-color 0.2s;
-    }
-
-    #search-results .dropdown-item:hover {
-      background-color: #d9eaff;
-      cursor: pointer;
     }
 
     @media (max-width: 900px) {

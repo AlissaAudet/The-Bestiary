@@ -84,7 +84,8 @@ def observation_page(oid):
                            comments=comments,
                            userId=userId,
                            image_data=image_data,
-                           authenticated="uid" in session)
+                           authenticated="uid" in session,
+                           user_id=session.get("uid"))
 
 @observation_bp.route("/api/observations/filter", methods=["GET"])
 def filter_observations():
@@ -133,10 +134,8 @@ def post_comment_api(oid):
 
 @observation_bp.route("/api/observations/latest", methods=["GET"])
 def get_latest_observations():
-    from models.observation_model import fetch_latest_observations
     latest = fetch_latest_observations(limit=5)
 
-    # Encode image_data for JSON serialization
     for obs in latest:
         if obs["image_data"]:
             obs["image_data"] = base64.b64encode(obs["image_data"]).decode("utf-8")

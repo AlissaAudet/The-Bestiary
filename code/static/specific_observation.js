@@ -1,99 +1,58 @@
-document.getElementById("obs-form").addEventListener("input", fetchFilteredObservations);
-document.getElementById("obs-form").addEventListener("click", fetchFilteredObservations);
+document.getElementById("post_comment_btn").addEventListener("click", async function () {
+    const commentBox = document.getElementById("comment_box");
+    const commentText = commentBox.value.trim();
+    const observationId = window.location.pathname.split("/")[2];
 
-setupSpeciesSearch()
-fetchFilteredObservations();
+    if (commentText.length > 0) {
+        try {
+            const response = await fetch(`/api/observation/${observationId}/comment`, {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                    comment_text: commentText
+                })
+            });
 
-async function fetchFilteredObservations() {
-    const author = document.getElementById("author-search").value;
-    const species = document.getElementById("species").value;
-    const behaviorInput = document.getElementById("behavior").value;
-    const behavior = (behaviorInput === "None") ? "" : behaviorInput;
-    const timestamp = document.getElementById("timestamp").value;
-    const place_name = document.getElementById("place_name").value;
+            const data = await response.json();
+            if (data.message === "Comment posted successfully") {
+                commentBox.value = "";
+                await fetchComments();
+            } else {
+                alert(data.error || "Error posting comment");
+            }
+        } catch (error) {
+            console.error("Error posting comment:", error);
+        }
+    } else {
+        alert("Please enter a comment before submitting.");
+    }
+});
 
-    const resultsContainer = document.getElementById("search-results")
-    const queryParams = new URLSearchParams({
-        author: author || "",
-        species: species || "",
-        behavior: behavior || "",
-        timestamp: timestamp || "",
-        place_name: place_name || "",
-    });
+async function fetchComments() {
+    const observationId = window.location.pathname.split("/")[2];
 
     try {
-        const response = await fetch(`/api/observations/filter?${queryParams}`);
-        const observations = await response.json();
+        const response = await fetch(`/api/observation/${observationId}/comments`);
+        const comments = await response.json();
 
-        resultsContainer.innerHTML = "";
+        console.log("Fetched comments:", comments);
 
-        observations.forEach(obs => {
-            const li = document.createElement("li");
-            li.textContent = `${obs.species} - ${obs.author} - ${obs.behavior}`;
-            li.classList.add("dropdown-item");
-            li.addEventListener("click", function () {
-                window.location.href = `/observation/${obs.oid}`;
+        const commentList = document.getElementById("comment-list");
+        commentList.innerHTML = "";
+
+        if (comments && Array.isArray(comments)) {
+            comments.forEach(comment => {
+                const li = document.createElement("li");
+                li.textContent = `${comment.first_name} ${comment.last_name}: ${comment.text}`;
+                commentList.appendChild(li);
             });
-            resultsContainer.appendChild(li);
-        });
-
-        const searchResults = document.getElementById("search-results");
-        searchResults.offsetHeight;
-        resultsContainer.style.setProperty("display", observations.length ? "block" : "none", "important");
-
+        } else {
+            console.error("Expected an array but got:", comments);
+        }
     } catch (error) {
-        console.error("Error fetching filtered observations:", error);
+        console.error("Error fetching comments:", error);
     }
 }
-function setupSpeciesSearch() {
-    const searchInput = document.getElementById("species-search");
-    const resultsDropdown = document.getElementById("species-results");
-    const hiddenSpeciesInput = document.getElementById("species");
 
-    searchInput.addEventListener("input", async () => {
-        const query = searchInput.value.trim();
-        if (query.length === 0) {
-            resultsDropdown.style.display = "none";
-            return;
-        }
 
-        try {
-            const response = await fetch(`/api/species/search?q=${encodeURIComponent(query)}`);
-            const speciesList = await response.json();
-
-            resultsDropdown.innerHTML = "";
-            if (speciesList.length === 0) {
-                resultsDropdown.style.display = "none";
-                return;
-            }
-
-            speciesList.forEach(spec => {
-                const item = document.createElement("li");
-                item.textContent = `${spec.name} (${spec.id})`;
-                item.classList.add("dropdown-item");
-                item.addEventListener("click", () => {
-                    searchInput.value = spec.name;
-                    hiddenSpeciesInput.value = spec.id;
-                    resultsDropdown.style.display = "none";
-                });
-                resultsDropdown.appendChild(item);
-            });
-
-            resultsDropdown.style.display = "block";
-        } catch (error) {
-            console.error("Error fetching species:", error);
-        }
-    });
-
-    document.addEventListener("click", (event) => {
-        if (!resultsDropdown.contains(event.target) && event.target !== searchInput) {
-            resultsDropdown.style.display = "none";
-        }
-    });
-
-    document.getElementById("species-search").addEventListener("click", function() {
-        hiddenSpeciesInput.value = ""
-        searchInput.value = "";
-})
-}
-
+document.addEventListener("DOMContentLoaded", fetchComments);
