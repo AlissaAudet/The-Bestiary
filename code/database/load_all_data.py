@@ -1,6 +1,6 @@
 import os
 
-from data import load_user_data, load_place_data, load_quebec_species, load_photo_data, load_observation_data, load_climate_data, load_ForbiddenWords_data
+from data import load_user_data, load_place_data, load_quebec_species, load_photo_data, load_observation_data, load_climate_data, load_ForbiddenWords_data, load_follower_data
 
 def main():
     print("Loading user data...")
@@ -24,6 +24,9 @@ def main():
 
     print("Loading Observation data...")
     load_observation_data.load_observations()
+
+    print("Loading Follower data...")
+    load_follower_data.load_followers()
 
     print("All data inserted successfully!")
 
