@@ -76,5 +76,10 @@ Layers
 
 ![image](https://github.com/user-attachments/assets/fbd7a427-a30f-48de-af61-284ece159c8f)
 
+### Sign Up
+
+![image](https://github.com/user-attachments/assets/17441901-c4bf-45eb-b619-a0a2923015c9)
+
+
 
 
